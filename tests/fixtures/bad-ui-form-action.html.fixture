@@ -1,0 +1,3 @@
+<form action="/api/issues/update" method="post">
+  <input name="status" />
+</form>

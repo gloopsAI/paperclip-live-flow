@@ -1,0 +1,5 @@
+const xhr = new XMLHttpRequest();
+xhr.open("GET", "/api/issues/1");
+navigator.sendBeacon("/api/agents/track", "payload");
+const ws = new WebSocket("wss://host/events");
+const es = new EventSource("/api/stream");

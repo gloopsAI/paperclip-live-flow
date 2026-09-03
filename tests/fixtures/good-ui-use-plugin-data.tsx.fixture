@@ -1,0 +1,6 @@
+import { usePluginData } from "@paperclipai/plugin-sdk/ui";
+
+export function Widget() {
+  const { data } = usePluginData("company-flow");
+  return <div>{data?.counts.active ?? 0}</div>;
+}

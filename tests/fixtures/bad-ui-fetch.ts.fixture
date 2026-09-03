@@ -1,0 +1,4 @@
+export async function loadIssues() {
+  const res = await fetch("/api/issues/list");
+  return res.json();
+}

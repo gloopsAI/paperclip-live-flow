@@ -1,0 +1,7 @@
+// Plugin-owned UI embedding a bridge marker must not bypass the guard.
+const BRIDGE = "/__paperclip/plugin-data";
+export async function loadIssues() {
+  void BRIDGE;
+  const res = await fetch("/api/issues/list");
+  return res.json();
+}

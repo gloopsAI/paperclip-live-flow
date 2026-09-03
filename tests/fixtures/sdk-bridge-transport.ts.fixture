@@ -1,0 +1,7 @@
+// SDK bridge transport — not plugin-owned UI
+export function bridgeFetch(url: string) {
+  if (url.startsWith("/__paperclip/plugin-data")) {
+    return fetch(url);
+  }
+  throw new Error("forbidden");
+}

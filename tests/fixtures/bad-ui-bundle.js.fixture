@@ -1,0 +1,1 @@
+(()=>{fetch("/api/issues/list");const p="/action/projects/read";navigator.sendBeacon(p);})();
