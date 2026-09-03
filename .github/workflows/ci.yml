@@ -52,8 +52,8 @@ jobs:
       - name: Check coverage
         run: pnpm test:coverage
 
-      - name: Build
-        run: pnpm build
+      - name: UI boundary gate
+        run: pnpm check:ui-boundary
 
       - name: Inspect publish package
         run: pnpm pack:check

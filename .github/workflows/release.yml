@@ -44,7 +44,7 @@ jobs:
           pnpm typecheck
           pnpm test
           pnpm test:coverage
-          pnpm build
+          pnpm check:ui-boundary
           pnpm pack:check
 
       - name: Verify tag matches package version
