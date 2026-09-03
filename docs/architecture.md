@@ -74,3 +74,30 @@ are release gates.
 Browser installation and packed-package canaries run only against an isolated
 stock Paperclip checkout. Production Paperclip installation remains outside
 this bootstrap's authority.
+
+## Documentation index (W5)
+
+| Document                                               | Purpose                            |
+| ------------------------------------------------------ | ---------------------------------- |
+| [`delivery-contract.md`](./delivery-contract.md)       | Product and manifest contract      |
+| [`compatibility.md`](./compatibility.md)               | Pin, toolchain, tested vs targeted |
+| [`evidence.md`](./evidence.md)                         | UI fact → SDK provenance           |
+| [`privacy.md`](./privacy.md)                           | Data handling and trusted install  |
+| [`issue-2741.md`](./issue-2741.md)                     | Upstream issue mapping             |
+| [`operator-commands.md`](./operator-commands.md)       | Pinned upstream CLI reference      |
+| [`verification-runbook.md`](./verification-runbook.md) | Gates and canary procedure         |
+| [`screenshot-inventory.md`](./screenshot-inventory.md) | Planned W6 captures                |
+
+Browser/canary and screenshot evidence remain **pending W6** — see verification runbook.
+
+## Model use (bootstrap W5 disclosure)
+
+| Pass                    | Declared route           | Outcome                                                                      |
+| ----------------------- | ------------------------ | ---------------------------------------------------------------------------- |
+| Execution parent        | `gpt-5.6-sol-high`       | Contract, integration, release authority                                     |
+| W5 documentation worker | `composer-2.5`           | Per checked-in agent routing in strategy/target repo                         |
+| Grok medium attempts    | `cursor-grok-4.6-medium` | Failed with `resource_exhausted` — **no Grok implementation claimed**        |
+| Runtime worker identity | —                        | Cursor did not expose backend model ID; route known, identity **unverified** |
+
+Do not attribute W2–W5 implementation to Grok unless a future pass records successful execution
+with exposed identity.

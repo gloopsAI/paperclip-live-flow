@@ -127,6 +127,18 @@ patch, private route, direct database read, or `gloopsAI/paperclip` runtime depe
 
 See `docs/architecture.md` for preflight evidence and scaffold lineage.
 
+## Documentation (W5)
+
+Operator and evidence docs (browser canary **pending W6**):
+
+- [`compatibility.md`](./compatibility.md)
+- [`evidence.md`](./evidence.md)
+- [`privacy.md`](./privacy.md)
+- [`issue-2741.md`](./issue-2741.md)
+- [`operator-commands.md`](./operator-commands.md)
+- [`verification-runbook.md`](./verification-runbook.md)
+- [`screenshot-inventory.md`](./screenshot-inventory.md)
+
 ## Verification gates
 
 Local required gates:
