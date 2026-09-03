@@ -57,6 +57,68 @@ describe("contracts shape", () => {
     expect(tokenCost.scopeLabel).toBe("loaded active roots");
   });
 
+  it("models company-flow root row with nullable canonical status", () => {
+    const response: CompanyFlowResponse = {
+      companyId: "co-1",
+      phaseProfile: "software_delivery",
+      roots: [
+        {
+          rootIssueId: "root-missing",
+          identifier: null,
+          title: "",
+          projectId: null,
+          projectName: null,
+          assigneeAgentId: null,
+          assigneeLabel: null,
+          canonicalStatus: null,
+          currentStageType: null,
+          currentParticipantId: null,
+          blockerCount: 0,
+          latestRun: null,
+          elapsedMs: null,
+          phases: [],
+          phaseProfile: "software_delivery",
+          tokenCost: {
+            scope: "loaded_active_roots",
+            availability: "unavailable",
+            inputTokens: null,
+            cachedInputTokens: null,
+            outputTokens: null,
+            costCents: null,
+            billingCode: null,
+            snapshotAt: null,
+            scopeLabel: "loaded active roots"
+          },
+          deepLinkIssueId: "root-missing",
+          rowError: { source: "issues.get", message: "Root issue unavailable", recoverable: true }
+        }
+      ],
+      attention: [],
+      companyIncidents: [],
+      scopeUnavailableIncidents: [],
+      counts: { active: 0, blocked: 0, inReview: 0, failedRuns: 0 },
+      tokenCost: {
+        scope: "loaded_active_roots",
+        availability: "not_available",
+        inputTokens: null,
+        cachedInputTokens: null,
+        outputTokens: null,
+        costCents: null,
+        billingCode: null,
+        snapshotAt: null,
+        scopeLabel: "loaded active roots"
+      },
+      freshness: {
+        fetchedAt: "2026-09-03T12:00:00.000Z",
+        stale: false,
+        partial: true,
+        staleReason: null
+      },
+      sourceErrors: [{ source: "orchestration", message: "partial", recoverable: true }]
+    };
+    expect(response.roots[0]?.canonicalStatus).toBeNull();
+  });
+
   it("models company-flow snapshot with per-row errors and freshness", () => {
     const response: CompanyFlowResponse = {
       companyId: "co-1",

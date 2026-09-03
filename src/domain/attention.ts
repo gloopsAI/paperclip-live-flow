@@ -1,12 +1,23 @@
 import type { AttentionItem, AttentionReason } from "../contracts/common.js";
-import type { BlockerRef, ExecutionStateRef, IncidentRef, IssueRef, RunRef } from "./types.js";
+import type {
+  BlockerRef,
+  ExecutionStateRef,
+  IncidentAttentionTarget,
+  IncidentRef,
+  InvocationBlockRef,
+  IssueRef,
+  RunRef
+} from "./types.js";
 import { dedupeById } from "./roots.js";
 
 export type AttentionInput = {
   issues: IssueRef[];
   runs: RunRef[];
   blockers: BlockerRef[];
+  invocationBlocks?: InvocationBlockRef[];
   incidents: IncidentRef[];
+  /** Maps incident id → authoritative issue/root attention target. */
+  incidentTargets?: Map<string, IncidentAttentionTarget>;
   executionStates: Array<{ issueId: string; state: ExecutionStateRef | null }>;
   rootIssueIdByIssueId: Map<string, string>;
 };
@@ -90,9 +101,23 @@ export function deriveAttentionItems(input: AttentionInput): AttentionItem[] {
       rootIssueId: input.rootIssueIdByIssueId.get(issue.id) ?? issue.id,
       identifier: issue.identifier,
       title: issue.title,
-      reason: "invocation_block",
+      reason: "blocked",
       explanation: `Blocked by ${blocker.blockerIdentifier ?? blocker.blockerIssueId}.`,
       source: [{ kind: "relation", entityId: blocker.blockerIssueId, field: "blockedBy" }]
+    });
+  }
+
+  for (const block of input.invocationBlocks ?? []) {
+    const issue = input.issues.find((entry) => entry.id === block.issueId);
+    if (!issue) continue;
+    pushAttention(items, seen, {
+      issueId: issue.id,
+      rootIssueId: input.rootIssueIdByIssueId.get(issue.id) ?? issue.id,
+      identifier: issue.identifier,
+      title: issue.title,
+      reason: "invocation_block",
+      explanation: block.reason,
+      source: [{ kind: "invocationBlock", entityId: block.issueId, field: "reason" }]
     });
   }
 
@@ -121,11 +146,13 @@ export function deriveAttentionItems(input: AttentionInput): AttentionItem[] {
 
   for (const incident of dedupeById(input.incidents)) {
     if (incident.status !== "open") continue;
+    const target = input.incidentTargets?.get(incident.id);
+    if (!target) continue;
     pushAttention(items, seen, {
-      issueId: incident.scopeType === "company" ? "company" : incident.scopeId,
-      rootIssueId: incident.scopeType === "company" ? "company" : incident.scopeId,
-      identifier: null,
-      title: incident.scopeName ?? incident.id,
+      issueId: target.issueId,
+      rootIssueId: target.rootIssueId,
+      identifier: target.identifier,
+      title: target.title,
       reason: "budget_incident",
       explanation: `Open budget incident (${incident.scopeType}).`,
       source: [{ kind: "budgetIncident", entityId: incident.id, field: "status" }]

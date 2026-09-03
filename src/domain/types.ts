@@ -57,6 +57,22 @@ export type BlockerRef = {
   blockerIdentifier: string | null;
 };
 
+export type InvocationBlockRef = {
+  issueId: string;
+  agentId: string;
+  scopeType: string;
+  scopeId: string;
+  reason: string;
+};
+
+/** Authoritative attention target for a budget incident. */
+export type IncidentAttentionTarget = {
+  issueId: string;
+  rootIssueId: string;
+  identifier: string | null;
+  title: string;
+};
+
 export type DocumentRef = {
   id: string;
   issueId: string;
