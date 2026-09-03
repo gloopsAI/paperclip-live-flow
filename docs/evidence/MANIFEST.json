@@ -57,7 +57,10 @@
       "command": "pnpm pack:check",
       "status": "passed",
       "packedFiles": 9,
-      "packedSizeKb": 562.9
+      "packedSizeBytes": 562848,
+      "packedSizeKb": 562.8,
+      "packedShasum": "85ccffb99ef1e62841033fd32a15517de5a21b8c",
+      "packedSha256": "1bbc74e48328770e8e684c0d2a94465f7767f5d9b0df4edff8175bb5bb235802"
     }
   },
   "w6Repair": {

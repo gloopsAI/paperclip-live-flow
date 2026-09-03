@@ -22,6 +22,9 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **CI repair:** `pnpm test` and `pnpm test:coverage` now run `pnpm build` first so the
+  built-bundle UI boundary gate passes on clean checkouts without relying on workflow step
+  order; CI and release workflows add an explicit `pnpm check:ui-boundary` step.
 - **W6 documentation:** README screenshots, verification runbook, screenshot inventory, and
   compatibility matrix updated from pending to pass; large HAR/trace/video gitignored as
   release-attachment-only artifacts.

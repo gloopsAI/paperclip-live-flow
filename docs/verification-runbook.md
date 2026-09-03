@@ -11,17 +11,17 @@ Authority: [`delivery-contract.md`](./delivery-contract.md), upstream pin
 
 Run from plugin repository root on a clean install:
 
-| Gate                   | Command                          | W6 status                          |
-| ---------------------- | -------------------------------- | ---------------------------------- |
-| Install lockfile       | `pnpm install --frozen-lockfile` | **passed**                         |
-| Format                 | `pnpm format:check`              | **passed**                         |
-| Lint                   | `pnpm lint`                      | **passed**                         |
-| Typecheck              | `pnpm typecheck`                 | **passed**                         |
-| Unit/integration tests | `pnpm test`                      | **passed** (155 tests / 23 files)  |
-| Coverage               | `pnpm test:coverage`             | **passed**                         |
-| Build                  | `pnpm build`                     | **passed**                         |
-| UI boundary            | `pnpm check:ui-boundary`         | **passed** (2 tests, built bundle) |
-| Pack dry-run           | `pnpm pack:check`                | **passed** (9 files, 562.9 kB)     |
+| Gate                   | Command                          | W6 status                                                                  |
+| ---------------------- | -------------------------------- | -------------------------------------------------------------------------- |
+| Install lockfile       | `pnpm install --frozen-lockfile` | **passed**                                                                 |
+| Format                 | `pnpm format:check`              | **passed**                                                                 |
+| Lint                   | `pnpm lint`                      | **passed**                                                                 |
+| Typecheck              | `pnpm typecheck`                 | **passed**                                                                 |
+| Unit/integration tests | `pnpm test`                      | **passed** (155 tests / 23 files; builds `dist/` first for clean checkout) |
+| Coverage               | `pnpm test:coverage`             | **passed** (builds `dist/` first for clean checkout)                       |
+| Build                  | `pnpm build`                     | **passed** (also invoked by test scripts and `check:ui-boundary`)          |
+| UI boundary            | `pnpm check:ui-boundary`         | **passed** (2 tests, built bundle; explicit CI/release step)               |
+| Pack dry-run           | `pnpm pack:check`                | **passed** (9 files, 562.8 kB)                                             |
 
 ## W6 repair (list vs detail execution state)
 
