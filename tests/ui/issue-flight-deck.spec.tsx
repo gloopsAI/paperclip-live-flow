@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { screen, within, fireEvent } from "@testing-library/react";
 import { IssueDetailTab, TaskDetailView } from "../../src/ui/issue-flow/IssueSurfaces.js";
 import { ISSUE_FLOW_HANDLER } from "../../src/ui/constants.js";
@@ -24,18 +24,42 @@ describe("Issue Delivery Flight Deck UI", () => {
   });
 
   it("loads active build with run, agent context, and semantic landmarks", () => {
-    setPluginDataState({ data: activeBuildFlow, loading: false, error: null });
-    renderIssueUi(<IssueDetailTab {...issueTabContext()} />);
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-09-03T12:05:00.000Z"));
+    try {
+      setPluginDataState({ data: activeBuildFlow, loading: false, error: null });
+      renderIssueUi(<IssueDetailTab {...issueTabContext()} />);
 
-    expect(screen.getByRole("article", { name: /delivery flight deck/i })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: /issue identity/i })).toBeTruthy();
-    expect(screen.getByText("Root delivery issue")).toBeTruthy();
-    expect(screen.getByLabelText(/status: in progress/i)).toBeTruthy();
-    expect(screen.getByRole("table", { name: undefined })).toBeTruthy();
-    expect(screen.getByText("checkout")).toBeTruthy();
-    expect(mockUsePluginData).toHaveBeenCalledWith(ISSUE_FLOW_HANDLER, {
-      issueId: activeBuildFlow.issueId
-    });
+      expect(screen.getByRole("article", { name: /delivery flight deck/i })).toBeTruthy();
+      expect(screen.getByRole("heading", { name: /issue identity/i })).toBeTruthy();
+      expect(screen.getByText("Root delivery issue")).toBeTruthy();
+      expect(screen.getByLabelText(/status: in progress/i)).toBeTruthy();
+      expect(screen.getByRole("table", { name: undefined })).toBeTruthy();
+      expect(screen.getByText("checkout")).toBeTruthy();
+      expect(mockUsePluginData).toHaveBeenCalledWith(ISSUE_FLOW_HANDLER, {
+        issueId: activeBuildFlow.issueId
+      });
+
+      const identitySection = screen
+        .getByRole("heading", { name: /issue identity/i })
+        .closest("section");
+      expect(identitySection).toBeTruthy();
+      expect(within(identitySection!).getByText("Worker")).toBeTruthy();
+
+      const executionSection = screen
+        .getByRole("heading", { name: /execution policy and state/i })
+        .closest("section");
+      expect(executionSection).toBeTruthy();
+      expect(within(executionSection!).getByText("Worker")).toBeTruthy();
+
+      const runsSection = screen.getByRole("heading", { name: /run history/i }).closest("section");
+      expect(runsSection).toBeTruthy();
+      const runsScope = within(runsSection!);
+      expect(runsScope.getByLabelText(/^Run running$/i)).toBeTruthy();
+      expect(runsScope.getByText("5m 0s")).toBeTruthy();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("shows pending review participant and approval summaries from execution facts", () => {

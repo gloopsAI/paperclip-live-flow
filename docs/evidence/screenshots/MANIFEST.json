@@ -1,0 +1,174 @@
+{
+  "generatedAt": "2026-09-03T15:43:28Z",
+  "stockPaperclipSha": "da0947d3582ac7779d6bf11851c9938eca6c5c8c",
+  "pluginSdkVersion": "1.0.0",
+  "canaryApiBase": "http://127.0.0.1:3120",
+  "canaryCompanySlug": "LIV",
+  "screenshotCount": 12,
+  "screenshots": [
+    {
+      "filename": "company-page-desktop-light-default.png",
+      "path": "docs/evidence/screenshots/company-page-desktop-light-default.png",
+      "sha256": "d60a0e9b86252a0eeb48283e1cf166c7af5c7368cfccfea6ce53e2c702f5cbd4",
+      "surface": "company-page",
+      "viewport": "desktop",
+      "theme": "light",
+      "captureState": "default-loaded-fixture",
+      "fixtureIdentifiers": ["LIV"],
+      "synthetic": false,
+      "hostSettings": {}
+    },
+    {
+      "filename": "company-page-desktop-dark-default.png",
+      "path": "docs/evidence/screenshots/company-page-desktop-dark-default.png",
+      "sha256": "2ff13d140bacd23c21d2b295f57824a543e6f48165221a0ad4f20218b678624f",
+      "surface": "company-page",
+      "viewport": "desktop",
+      "theme": "dark",
+      "captureState": "default-loaded-fixture",
+      "fixtureIdentifiers": ["LIV"],
+      "synthetic": false,
+      "hostSettings": {}
+    },
+    {
+      "filename": "company-page-narrow-light-default.png",
+      "path": "docs/evidence/screenshots/company-page-narrow-light-default.png",
+      "sha256": "ae7d5a02f16a1698b3654bb0fc2e0d2381f65b33b5d5d418969b7d060c16972e",
+      "surface": "company-page",
+      "viewport": "narrow",
+      "theme": "light",
+      "captureState": "default-loaded-fixture",
+      "fixtureIdentifiers": ["LIV"],
+      "synthetic": false,
+      "hostSettings": {}
+    },
+    {
+      "filename": "company-page-desktop-light-partial-error.png",
+      "path": "docs/evidence/screenshots/company-page-desktop-light-partial-error.png",
+      "sha256": "18c7c0de4db67745d00b778075cc18a7806bf515e47f4aa4d4f8da6ee9deff8e",
+      "surface": "company-page",
+      "viewport": "desktop",
+      "theme": "light",
+      "captureState": "partial-orchestration-unavailable",
+      "fixtureIdentifiers": ["LIV", "LIV-6"],
+      "synthetic": true,
+      "syntheticNote": "Browser-intercepted company-flow response modified to mark LIV-6 orchestration unavailable and freshness.partial true; built from an otherwise real canary page load.",
+      "hostSettings": {}
+    },
+    {
+      "filename": "company-page-desktop-light-empty.png",
+      "path": "docs/evidence/screenshots/company-page-desktop-light-empty.png",
+      "sha256": "68350a03e0b9b7685ba112994cf7701df34b712fe1a09c11a310802551968cd9",
+      "surface": "company-page",
+      "viewport": "desktop",
+      "theme": "light",
+      "captureState": "client-filter-empty-no-match",
+      "fixtureIdentifiers": ["LIV"],
+      "synthetic": false,
+      "captureNote": "Filter-empty / no-match state; company still has active roots.",
+      "hostSettings": {}
+    },
+    {
+      "filename": "company-page-desktop-light-blocked-attention.png",
+      "path": "docs/evidence/screenshots/company-page-desktop-light-blocked-attention.png",
+      "sha256": "12cdb882fb54c31f7b2397fac3cc9225881deb2743aaa5435d1abd7e0ef9b415",
+      "surface": "company-page",
+      "viewport": "desktop",
+      "theme": "light",
+      "captureState": "blocked-and-attention-lane",
+      "fixtureIdentifiers": ["LIV"],
+      "synthetic": false,
+      "hostSettings": {}
+    },
+    {
+      "filename": "issue-tab-desktop-light-in-progress.png",
+      "path": "docs/evidence/screenshots/issue-tab-desktop-light-in-progress.png",
+      "sha256": "3daefbec06b1c81c9f2447482394f97dbcfd99b3aec189868ec2a8128129d193",
+      "surface": "issue-detailTab",
+      "viewport": "desktop",
+      "theme": "light",
+      "captureState": "in-progress-active-run",
+      "fixtureIdentifiers": ["LIV", "LIV-1"],
+      "synthetic": false,
+      "hostSettings": {
+        "enableClassicTaskInterface": true
+      },
+      "stockCompatibilityNote": "Default enableClassicTaskInterface=false hides the detailTab slot; capture used stock enableClassicTaskInterface=true."
+    },
+    {
+      "filename": "issue-tab-desktop-light-review.png",
+      "path": "docs/evidence/screenshots/issue-tab-desktop-light-review.png",
+      "sha256": "dead8b99e96ab364f081ae68f732a97f6243e763470608313c3beb2d57c94abc",
+      "surface": "issue-detailTab",
+      "viewport": "desktop",
+      "theme": "light",
+      "captureState": "pending-review-stage-participant",
+      "fixtureIdentifiers": ["LIV", "LIV-9"],
+      "synthetic": false,
+      "hostSettings": {
+        "enableClassicTaskInterface": true
+      },
+      "stockCompatibilityNote": "Default enableClassicTaskInterface=false hides the detailTab slot; capture used stock enableClassicTaskInterface=true."
+    },
+    {
+      "filename": "issue-tab-desktop-light-done-not-tracked.png",
+      "path": "docs/evidence/screenshots/issue-tab-desktop-light-done-not-tracked.png",
+      "sha256": "c4b247587f39879edde958468c60d372942c1a362d174a839d4a5bb34d2280e0",
+      "surface": "issue-detailTab",
+      "viewport": "desktop",
+      "theme": "light",
+      "captureState": "done-merge-deploy-not-tracked",
+      "fixtureIdentifiers": ["LIV", "LIV-8"],
+      "synthetic": false,
+      "hostSettings": {
+        "enableClassicTaskInterface": true
+      },
+      "stockCompatibilityNote": "Default enableClassicTaskInterface=false hides the detailTab slot; capture used stock enableClassicTaskInterface=true."
+    },
+    {
+      "filename": "issue-task-detail-desktop-light-compact.png",
+      "path": "docs/evidence/screenshots/issue-task-detail-desktop-light-compact.png",
+      "sha256": "daac07fa71a47cc4d1bbe5d390b73fed5d72815c68c2e89527e68f71ae2752fe",
+      "surface": "issue-taskDetailView",
+      "viewport": "desktop",
+      "theme": "light",
+      "captureState": "compact-flight-deck",
+      "fixtureIdentifiers": ["LIV", "LIV-1"],
+      "synthetic": false,
+      "hostSettings": {
+        "enableClassicTaskInterface": false,
+        "enableStreamlinedUi": true
+      },
+      "stockCompatibilityNote": "Default streamlined task UI shows taskDetailView; the Open full Delivery Flight Deck tab host-navigation link navigates to the issue URL but stock IssueDetail does not activate a plugin detail tab from the query while streamlined mode hides the tab."
+    },
+    {
+      "filename": "dashboard-widget-desktop-light-default.png",
+      "path": "docs/evidence/screenshots/dashboard-widget-desktop-light-default.png",
+      "sha256": "8812492a4ec5c459f0b5ecebb79792a4e29be5166441a8eb547309663c01a429",
+      "surface": "dashboard-widget",
+      "viewport": "desktop",
+      "theme": "light",
+      "captureState": "summary-counts",
+      "fixtureIdentifiers": ["LIV"],
+      "synthetic": false,
+      "hostSettings": {
+        "enableStreamlinedUi": true
+      }
+    },
+    {
+      "filename": "project-sidebar-desktop-light-link.png",
+      "path": "docs/evidence/screenshots/project-sidebar-desktop-light-link.png",
+      "sha256": "52306cb2bcee9a0419e19806e2b1b7b25213c1512f4395ee9ab804a1d53f512e",
+      "surface": "project-sidebar-item",
+      "viewport": "desktop",
+      "theme": "light",
+      "captureState": "project-deep-link-highlight",
+      "fixtureIdentifiers": ["LIV", "Atlas Delivery"],
+      "synthetic": false,
+      "hostSettings": {
+        "enableStreamlinedUi": false
+      },
+      "stockCompatibilityNote": "Default enableStreamlinedUi=true hides classic SidebarProjects and therefore projectSidebarItem; capture used stock enableStreamlinedUi=false. Company sidebar page link and dashboard widget remain available in default streamlined UI."
+    }
+  ]
+}

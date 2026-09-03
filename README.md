@@ -35,10 +35,23 @@ upstream pin: [`docs/architecture.md`](./docs/architecture.md).
 
 ## Screenshots and demo evidence
 
-**Status: pending W6.** No checked-in release screenshots, browser canary receipts, or
-network/console traces exist yet. Planned capture inventory:
+**W6 verification complete (2026-09-03).** Twelve PNG screenshots are tracked in git under
+[`docs/evidence/screenshots/`](./docs/evidence/screenshots/) with digests in
+[`docs/evidence/screenshots/MANIFEST.json`](./docs/evidence/screenshots/MANIFEST.json).
+Master receipt: [`docs/evidence/MANIFEST.json`](./docs/evidence/MANIFEST.json) (4 linked JSON receipts). Full inventory:
 [`docs/screenshot-inventory.md`](./docs/screenshot-inventory.md). Verification runbook:
-[`docs/verification-runbook.md`](./docs/verification-runbook.md).
+[`docs/verification-runbook.md`](./docs/verification-runbook.md). Browser accessibility:
+[`docs/evidence/browser-accessibility-check.json`](./docs/evidence/browser-accessibility-check.json).
+
+| Surface                                             | Screenshot                                                                                       |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Company page (light, desktop)                       | ![Company Live Flow default](./docs/evidence/screenshots/company-page-desktop-light-default.png) |
+| Pending review (LIV-9, detail tab)                  | ![Issue review tab](./docs/evidence/screenshots/issue-tab-desktop-light-review.png)              |
+| Compact task detail (LIV-1, default streamlined UI) | ![Compact flight deck](./docs/evidence/screenshots/issue-task-detail-desktop-light-compact.png)  |
+| Dashboard widget                                    | ![Dashboard widget](./docs/evidence/screenshots/dashboard-widget-desktop-light-default.png)      |
+
+Large browser canary artifacts (11M HAR, 36M Playwright trace, 3.7M video) are
+**release-attachment-only** — SHA256 digests in the master manifest; not committed to git.
 
 Directional design references (not release evidence) live in the source implementation plan
 under `assets/paperclip-live-flow/` in the strategy repository.
@@ -84,10 +97,10 @@ with `@paperclipai/plugin-sdk` **1.0.0** and `@paperclipai/shared` **0.3.1**.
 
 Build/test toolchain: Node **≥24.11.0**, pnpm **9.15.4** (see `package.json` `engines`).
 
-**Tested vs targeted:** unit/component/policy gates pass locally (W2–W4); isolated stock
-Paperclip browser canary is **pending W6**. After host upgrade, confirm target with
-`paperclipai plugin target` and re-run gates — **no** automatic SDK version detection in the
-plugin.
+**Tested vs targeted:** all local deterministic gates and isolated stock Paperclip browser
+canary **passed at W6** (pin `da0947d`, SDK **1.0.0**, canary `http://127.0.0.1:3120`, plugin
+status `ready`). After host upgrade, confirm target with `paperclipai plugin target` and re-run
+gates — **no** automatic SDK version detection in the plugin.
 
 Full matrix: [`docs/compatibility.md`](./docs/compatibility.md).
 
@@ -156,7 +169,14 @@ persistent plugin storage in `0.1.0`. See [`docs/privacy.md`](./docs/privacy.md)
 - No “recent done” company window — active list statuses only.
 - No all-time company spend aggregate.
 - Branch/workspace facts not exposed by SDK are omitted.
-- Screenshots, browser canary, and registry install proof: **pending W6/W7**.
+- Registry install proof and npm publish: **pending W7**.
+- **Stock host UI settings:** default `enableClassicTaskInterface=false` hides the issue
+  `detailTab`; default `enableStreamlinedUi=true` hides classic `SidebarProjects` /
+  `projectSidebarItem`. W6 screenshots that show those slots used the noted stock overrides;
+  see [`docs/compatibility.md`](./docs/compatibility.md).
+- **Streamlined task detail:** compact `taskDetailView` works in default UI; the “Open full
+  Delivery Flight Deck tab” link navigates to the issue URL but stock IssueDetail does not
+  activate a plugin detail tab from the query while streamlined mode hides the tab.
 
 ## Upstream issue #2741
 

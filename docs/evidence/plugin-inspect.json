@@ -1,0 +1,36 @@
+{
+  "capturedAt": "2026-09-03T15:38:00Z",
+  "stockPaperclipSha": "da0947d3582ac7779d6bf11851c9938eca6c5c8c",
+  "apiBase": "http://127.0.0.1:3120",
+  "id": "6adfb9de-a06d-4f6c-b3d2-7397f92c5c6f",
+  "pluginKey": "gloops.live-flow",
+  "packageName": "@gloops/paperclip-live-flow",
+  "version": "0.1.0",
+  "apiVersion": 1,
+  "status": "ready",
+  "lastError": null,
+  "supportsConfigTest": false,
+  "capabilities": [
+    "issues.read",
+    "issues.orchestration.read",
+    "issue.subtree.read",
+    "issue.relations.read",
+    "issue.documents.read",
+    "agents.read",
+    "projects.read",
+    "ui.page.register",
+    "ui.sidebar.register",
+    "ui.dashboardWidget.register",
+    "ui.detailTab.register"
+  ],
+  "slots": [
+    "page:live-flow-page",
+    "sidebar:live-flow-sidebar",
+    "projectSidebarItem:live-flow-project-link",
+    "dashboardWidget:live-flow-summary",
+    "detailTab:live-flow-issue-tab",
+    "taskDetailView:live-flow-task-view"
+  ],
+  "installedAt": "2026-09-03T15:02:47.793Z",
+  "updatedAt": "2026-09-03T15:13:47.766Z"
+}

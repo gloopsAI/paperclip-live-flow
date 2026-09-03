@@ -3,3 +3,8 @@ node_modules
 coverage
 .paperclip-sdk/*
 !.paperclip-sdk/*.tgz
+
+# W6 release-attachment-only browser canary artifacts (digests in docs/evidence/MANIFEST.json)
+docs/evidence/live-flow-w6-browser-canary.har
+docs/evidence/live-flow-w6-browser-canary-trace.zip
+docs/evidence/live-flow-w6-browser-canary.webm

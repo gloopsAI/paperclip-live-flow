@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-09-03T15:37:31.545Z",
+  "companyId": "8bb28f91-575d-4562-a02d-253abcbadaa6",
+  "pluginId": "gloops.live-flow",
+  "canonicalFields": {
+    "issues": [
+      "id",
+      "identifier",
+      "status",
+      "parentId",
+      "projectId",
+      "assigneeAgentId",
+      "assigneeUserId",
+      "checkoutRunId",
+      "executionRunId",
+      "executionPolicy",
+      "executionState",
+      "completedAt",
+      "cancelledAt"
+    ],
+    "agents": ["id", "name", "status", "reportsTo"],
+    "projects": ["id", "name", "status"],
+    "approvals": ["id", "status", "issueId", "type"],
+    "runs": ["id", "status", "agentId"]
+  },
+  "before": {
+    "sha256": "d91d7cd2144b01f3e4058c1af87bc2c5bae50763567da7be28eaeb8c4ffa4c03",
+    "counts": {
+      "issues": 10,
+      "agents": 10,
+      "projects": 2,
+      "approvals": 0,
+      "runs": 27
+    }
+  },
+  "bridgeCalls": [
+    {
+      "key": "company-flow",
+      "status": "ok",
+      "responseCompanyId": "8bb28f91-575d-4562-a02d-253abcbadaa6"
+    },
+    {
+      "key": "dashboard-summary",
+      "status": "ok",
+      "responseCompanyId": "8bb28f91-575d-4562-a02d-253abcbadaa6"
+    },
+    {
+      "key": "issue-flow",
+      "status": "ok",
+      "responseCompanyId": "8bb28f91-575d-4562-a02d-253abcbadaa6"
+    }
+  ],
+  "after": {
+    "sha256": "d91d7cd2144b01f3e4058c1af87bc2c5bae50763567da7be28eaeb8c4ffa4c03",
+    "counts": {
+      "issues": 10,
+      "agents": 10,
+      "projects": 2,
+      "approvals": 0,
+      "runs": 27
+    }
+  },
+  "equal": true,
+  "changedCollections": []
+}

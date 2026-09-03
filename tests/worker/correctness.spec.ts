@@ -714,6 +714,298 @@ describe("W2B correctness repairs", () => {
   });
 });
 
+describe("W6 execution state hydration", () => {
+  beforeEach(() => {
+    sharedHandlerCache.clear();
+  });
+
+  function stripListExecutionFields(harness: ReturnType<typeof seedHarness>) {
+    const originalList = harness.ctx.issues.list;
+    harness.ctx.issues.list = async (input) => {
+      const page = await originalList(input);
+      return page.map((issue) => ({
+        ...issue,
+        executionState: null,
+        executionPolicy: null
+      }));
+    };
+  }
+
+  it("hydrates pending review stage and participant when list omits execution state", async () => {
+    const harness = seedHarness({
+      issues: [
+        baseIssue({
+          id: ISSUE_ROOT,
+          companyId: COMPANY_A,
+          title: "Review root",
+          projectId: PROJECT_A,
+          status: "in_review",
+          identifier: "LF-ROOT",
+          executionState: {
+            status: "in_progress",
+            currentStageId: "stage-review",
+            currentStageType: "review",
+            currentParticipant: { agentId: AGENT_PARTICIPANT, userId: null },
+            completedStageIds: [],
+            lastDecisionOutcome: null,
+            changesRequestedCount: 0
+          }
+        } as unknown as Issue)
+      ]
+    });
+    stripListExecutionFields(harness);
+
+    await plugin.definition.setup(harness.ctx);
+    const company = await invokeRpcGetData<{
+      roots: Array<{
+        rootIssueId: string;
+        currentStageType: string | null;
+        currentParticipantId: string | null;
+      }>;
+      attention: Array<{ reason: string; issueId: string }>;
+    }>(harness, "company-flow", COMPANY_A, {});
+
+    const root = company.roots.find((row) => row.rootIssueId === ISSUE_ROOT);
+    expect(root?.currentStageType).toBe("review");
+    expect(root?.currentParticipantId).toBe(AGENT_PARTICIPANT);
+
+    const reasons = company.attention.map((item) => item.reason);
+    expect(reasons).toContain("pending_review");
+    expect(company.attention.some((item) => item.issueId === ISSUE_ROOT)).toBe(true);
+  });
+
+  it("degrades honestly when issues.get fails without fabricating execution state", async () => {
+    const harness = seedHarness({
+      issues: [
+        baseIssue({
+          id: ISSUE_ROOT,
+          companyId: COMPANY_A,
+          title: "Review root",
+          projectId: PROJECT_A,
+          status: "in_review",
+          identifier: "LF-ROOT",
+          executionState: {
+            status: "in_progress",
+            currentStageId: "stage-review",
+            currentStageType: "review",
+            currentParticipant: { agentId: AGENT_PARTICIPANT, userId: null },
+            completedStageIds: [],
+            lastDecisionOutcome: null,
+            changesRequestedCount: 0
+          }
+        } as unknown as Issue)
+      ]
+    });
+    stripListExecutionFields(harness);
+
+    const originalGet = harness.ctx.issues.get;
+    harness.ctx.issues.get = async (issueId, companyId) => {
+      if (issueId === ISSUE_ROOT) {
+        throw new Error("detail read failed");
+      }
+      return originalGet(issueId, companyId);
+    };
+
+    await plugin.definition.setup(harness.ctx);
+    const company = await invokeRpcGetData<{
+      roots: Array<{
+        rootIssueId: string;
+        currentStageType: string | null;
+        currentParticipantId: string | null;
+      }>;
+      attention: Array<{ reason: string }>;
+      sourceErrors: Array<{ source: string; message: string }>;
+      freshness: { partial: boolean };
+    }>(harness, "company-flow", COMPANY_A, {});
+
+    const root = company.roots.find((row) => row.rootIssueId === ISSUE_ROOT);
+    expect(root?.currentStageType).toBeNull();
+    expect(root?.currentParticipantId).toBeNull();
+    expect(company.attention.map((item) => item.reason)).not.toContain("pending_review");
+    expect(company.sourceErrors.some((entry) => entry.source === `issues.get:${ISSUE_ROOT}`)).toBe(
+      true
+    );
+    expect(company.freshness.partial).toBe(true);
+  });
+
+  it("reports recoverable source error when issues.get returns null for a list record", async () => {
+    const harness = seedHarness({
+      issues: [
+        baseIssue({
+          id: ISSUE_ROOT,
+          companyId: COMPANY_A,
+          title: "Review root",
+          projectId: PROJECT_A,
+          status: "in_review",
+          identifier: "LF-ROOT",
+          executionState: {
+            status: "in_progress",
+            currentStageId: "stage-review",
+            currentStageType: "review",
+            currentParticipant: { agentId: AGENT_PARTICIPANT, userId: null },
+            completedStageIds: [],
+            lastDecisionOutcome: null,
+            changesRequestedCount: 0
+          }
+        } as unknown as Issue)
+      ]
+    });
+    stripListExecutionFields(harness);
+
+    const originalGet = harness.ctx.issues.get;
+    harness.ctx.issues.get = async (issueId, companyId) => {
+      if (issueId === ISSUE_ROOT) {
+        return null;
+      }
+      return originalGet(issueId, companyId);
+    };
+
+    await plugin.definition.setup(harness.ctx);
+    const company = await invokeRpcGetData<{
+      roots: Array<{
+        rootIssueId: string;
+        currentStageType: string | null;
+        currentParticipantId: string | null;
+        title: string;
+      }>;
+      sourceErrors: Array<{ source: string; message: string; recoverable: boolean }>;
+      freshness: { partial: boolean };
+    }>(harness, "company-flow", COMPANY_A, {});
+
+    const root = company.roots.find((row) => row.rootIssueId === ISSUE_ROOT);
+    expect(root?.currentStageType).toBeNull();
+    expect(root?.currentParticipantId).toBeNull();
+    expect(root?.title).toBe("Review root");
+    const detailError = company.sourceErrors.find(
+      (entry) => entry.source === `issues.get:${ISSUE_ROOT}`
+    );
+    expect(detailError).toBeDefined();
+    expect(detailError?.recoverable).toBe(true);
+    expect(detailError?.message).toMatch(/unavailable/i);
+    expect(company.freshness.partial).toBe(true);
+  });
+
+  it("hydrates child pending review attention when list omits execution state", async () => {
+    const harness = seedHarness({
+      issues: [
+        baseIssue({
+          id: ISSUE_ROOT,
+          companyId: COMPANY_A,
+          title: "Root issue",
+          projectId: PROJECT_A,
+          status: "done",
+          identifier: "LF-ROOT"
+        }),
+        baseIssue({
+          id: ISSUE_CHILD,
+          companyId: COMPANY_A,
+          parentId: ISSUE_ROOT,
+          title: "Child in review",
+          projectId: PROJECT_A,
+          status: "in_review",
+          identifier: "LF-CHILD",
+          executionState: {
+            status: "in_progress",
+            currentStageId: "stage-review",
+            currentStageType: "review",
+            currentParticipant: { agentId: AGENT_PARTICIPANT, userId: null },
+            completedStageIds: [],
+            lastDecisionOutcome: null,
+            changesRequestedCount: 0
+          }
+        } as unknown as Issue)
+      ]
+    });
+    stripListExecutionFields(harness);
+
+    await plugin.definition.setup(harness.ctx);
+    const company = await invokeRpcGetData<{
+      roots: Array<{
+        rootIssueId: string;
+        currentStageType: string | null;
+        currentParticipantId: string | null;
+      }>;
+      attention: Array<{ reason: string; issueId: string; rootIssueId: string }>;
+    }>(harness, "company-flow", COMPANY_A, {});
+
+    const root = company.roots.find((row) => row.rootIssueId === ISSUE_ROOT);
+    expect(root?.currentStageType).toBeNull();
+    expect(root?.currentParticipantId).toBeNull();
+
+    const pendingReview = company.attention.filter((item) => item.reason === "pending_review");
+    expect(pendingReview).toHaveLength(1);
+    expect(pendingReview[0]?.issueId).toBe(ISSUE_CHILD);
+    expect(pendingReview[0]?.rootIssueId).toBe(ISSUE_ROOT);
+  });
+
+  it("rejects foreign-company detail reads without leaking execution state", async () => {
+    const harness = seedHarness({
+      issues: [
+        baseIssue({
+          id: ISSUE_ROOT,
+          companyId: COMPANY_A,
+          title: "Review root",
+          projectId: PROJECT_A,
+          status: "in_review",
+          identifier: "LF-ROOT",
+          executionState: {
+            status: "in_progress",
+            currentStageId: "stage-review",
+            currentStageType: "review",
+            currentParticipant: { agentId: AGENT_PARTICIPANT, userId: null },
+            completedStageIds: [],
+            lastDecisionOutcome: null,
+            changesRequestedCount: 0
+          }
+        } as unknown as Issue)
+      ]
+    });
+    stripListExecutionFields(harness);
+
+    const originalGet = harness.ctx.issues.get;
+    harness.ctx.issues.get = async (issueId, companyId) => {
+      if (issueId === ISSUE_ROOT) {
+        return baseIssue({
+          id: ISSUE_ROOT,
+          companyId: COMPANY_B,
+          title: "Foreign detail",
+          status: "in_review",
+          identifier: "LF-FOREIGN",
+          executionState: {
+            status: "in_progress",
+            currentStageId: "stage-review",
+            currentStageType: "review",
+            currentParticipant: { agentId: AGENT_PARTICIPANT, userId: null },
+            completedStageIds: [],
+            lastDecisionOutcome: null,
+            changesRequestedCount: 0
+          }
+        } as unknown as Issue);
+      }
+      return originalGet(issueId, companyId);
+    };
+
+    await plugin.definition.setup(harness.ctx);
+    const company = await invokeRpcGetData<{
+      roots: Array<{
+        rootIssueId: string;
+        currentStageType: string | null;
+        currentParticipantId: string | null;
+        title: string;
+      }>;
+      sourceErrors: Array<{ source: string }>;
+    }>(harness, "company-flow", COMPANY_A, {});
+
+    const root = company.roots.find((row) => row.rootIssueId === ISSUE_ROOT);
+    expect(root?.currentStageType).toBeNull();
+    expect(root?.currentParticipantId).toBeNull();
+    expect(root?.title).toBe("Review root");
+    expect(company.sourceErrors.some((entry) => entry.source === `issues.get:${ISSUE_ROOT}`)).toBe(
+      true
+    );
+  });
+});
+
 describe("Live Flow worker handlers", () => {
   beforeEach(async () => {
     sharedHandlerCache.clear();
