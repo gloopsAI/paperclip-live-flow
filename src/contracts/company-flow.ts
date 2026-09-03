@@ -18,7 +18,8 @@ export type CompanyFlowRootRow = {
   projectName: string | null;
   assigneeAgentId: string | null;
   assigneeLabel: string | null;
-  canonicalStatus: CanonicalIssueStatus;
+  /** Null when the root entity could not be fetched; never a synthetic sentinel status. */
+  canonicalStatus: CanonicalIssueStatus | null;
   currentStageType: string | null;
   currentParticipantId: string | null;
   blockerCount: number;

@@ -29,6 +29,7 @@
     "test": "vitest run --config ./vitest.config.ts",
     "test:coverage": "vitest run --config ./vitest.config.ts --coverage",
     "build": "node ./esbuild.config.mjs",
+    "check:ui-boundary": "pnpm build && vitest run tests/policy/ui-boundary-gate.spec.ts --config ./vitest.config.ts",
     "build:rollup": "rollup -c",
     "pack:check": "npm pack --dry-run",
     "dev": "node ./esbuild.config.mjs --watch",

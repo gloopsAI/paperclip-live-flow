@@ -1,7 +1,16 @@
 import type { PaperclipPluginManifestV1 } from "@paperclipai/plugin-sdk";
 
-/** Read-only capability ceiling for v0.1.0; expand only with matching worker/UI use. */
-export const MANIFEST_CAPABILITIES = ["ui.dashboardWidget.register"] as const;
+/** Exact read-only capabilities used by the worker and current UI slots. */
+export const MANIFEST_CAPABILITIES = [
+  "issues.read",
+  "issues.orchestration.read",
+  "issue.subtree.read",
+  "issue.relations.read",
+  "issue.documents.read",
+  "agents.read",
+  "projects.read",
+  "ui.dashboardWidget.register"
+] as const;
 
 const manifest: PaperclipPluginManifestV1 = {
   id: "gloops.live-flow",
