@@ -133,3 +133,62 @@ export const CONTEXT_WINDOW_UTILIZATION_MESSAGE =
   "Context-window utilization is not exposed by the current Paperclip plugin API." as const;
 
 export const LOADED_ACTIVE_ROOTS_LABEL = "loaded active roots" as const;
+
+/** Native execution policy stage configured on the validated issue. */
+export type ExecutionStageFact = {
+  id: string;
+  type: string;
+  availability: FieldAvailability;
+};
+
+/** Read-only execution policy facts from the validated issue. */
+export type ExecutionPolicyFacts = {
+  availability: FieldAvailability;
+  stages: ExecutionStageFact[];
+};
+
+/** Read-only native execution state facts from the validated issue. */
+export type ExecutionStateFacts = {
+  availability: FieldAvailability;
+  status: string | null;
+  currentStageId: string | null;
+  currentStageType: string | null;
+  currentParticipantAgentId: string | null;
+  currentParticipantUserId: string | null;
+  currentParticipantLabel: string | null;
+  completedStageIds: string[];
+  lastDecisionOutcome: string | null;
+  changesRequestedCount: number | null;
+};
+
+/** Approval summary fact from orchestration — unavailable when orchestration load fails. */
+export type ApprovalFact = {
+  id: string;
+  issueId: string;
+  type: string;
+  status: string;
+  requestedByAgentId: string | null;
+  requestedByUserId: string | null;
+  decidedByUserId: string | null;
+  decidedAt: string | null;
+  createdAt: string | null;
+  availability: FieldAvailability;
+};
+
+/** Invocation block summary fact from orchestration — unavailable when orchestration load fails. */
+export type InvocationBlockFact = {
+  issueId: string;
+  agentId: string;
+  scopeType: string;
+  scopeId: string;
+  scopeName: string | null;
+  reason: string;
+  availability: FieldAvailability;
+};
+
+/** Orchestration-derived collections with collection-level availability. */
+export type OrchestrationDerivedFacts = {
+  availability: FieldAvailability;
+  approvals: ApprovalFact[];
+  invocationBlocks: InvocationBlockFact[];
+};

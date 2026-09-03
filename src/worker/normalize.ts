@@ -1,9 +1,14 @@
 import type {
+  ApprovalFact,
   AttentionItem,
   CanonicalIssueStatus,
   DocumentFact,
+  ExecutionPolicyFacts,
+  ExecutionStateFacts,
   FreshnessState,
   IncidentFact,
+  InvocationBlockFact,
+  OrchestrationDerivedFacts,
   PhaseFact,
   PhaseProfile,
   RelationFact,
@@ -14,6 +19,8 @@ import type {
 } from "../contracts/common.js";
 import type {
   PluginBudgetIncidentSummary,
+  PluginIssueApprovalSummary,
+  PluginIssueInvocationBlockSummary,
   PluginIssueOrchestrationSummary,
   PluginIssueRunSummary,
   PluginIssueSubtree
@@ -127,6 +134,101 @@ export function toExecutionState(issue: LoadedIssue): ExecutionStateRef | null {
     completedStageIds: [...issue.executionState.completedStageIds],
     lastDecisionOutcome: issue.executionState.lastDecisionOutcome,
     changesRequestedCount: issue.executionState.changesRequestedCount
+  };
+}
+
+export function toExecutionPolicyFacts(issue: LoadedIssue): ExecutionPolicyFacts {
+  const policy = toExecutionPolicy(issue);
+  if (!policy) {
+    return { availability: "not_available", stages: [] };
+  }
+  return {
+    availability: "available",
+    stages: policy.stages.map((stage) => ({
+      id: stage.id,
+      type: stage.type,
+      availability: "available" as const
+    }))
+  };
+}
+
+export function toExecutionStateFacts(
+  issue: LoadedIssue,
+  participantLabel: string | null = null
+): ExecutionStateFacts {
+  const state = toExecutionState(issue);
+  if (!state) {
+    return {
+      availability: "not_available",
+      status: null,
+      currentStageId: null,
+      currentStageType: null,
+      currentParticipantAgentId: null,
+      currentParticipantUserId: null,
+      currentParticipantLabel: null,
+      completedStageIds: [],
+      lastDecisionOutcome: null,
+      changesRequestedCount: null
+    };
+  }
+  return {
+    availability: "available",
+    status: state.status,
+    currentStageId: state.currentStageId,
+    currentStageType: state.currentStageType,
+    currentParticipantAgentId: state.currentParticipantAgentId,
+    currentParticipantUserId: state.currentParticipantUserId,
+    currentParticipantLabel: participantLabel,
+    completedStageIds: [...state.completedStageIds],
+    lastDecisionOutcome: state.lastDecisionOutcome,
+    changesRequestedCount: state.changesRequestedCount ?? null
+  };
+}
+
+export function toApprovalFact(approval: PluginIssueApprovalSummary): ApprovalFact {
+  return {
+    id: approval.id,
+    issueId: approval.issueId,
+    type: approval.type,
+    status: approval.status,
+    requestedByAgentId: approval.requestedByAgentId,
+    requestedByUserId: approval.requestedByUserId,
+    decidedByUserId: approval.decidedByUserId,
+    decidedAt: approval.decidedAt,
+    createdAt: approval.createdAt,
+    availability: "available"
+  };
+}
+
+export function toInvocationBlockFact(
+  block: PluginIssueInvocationBlockSummary
+): InvocationBlockFact {
+  return {
+    issueId: block.issueId,
+    agentId: block.agentId,
+    scopeType: block.scopeType,
+    scopeId: block.scopeId,
+    scopeName: block.scopeName,
+    reason: block.reason,
+    availability: "available"
+  };
+}
+
+export function toOrchestrationDerivedFacts(
+  orchestration: PluginIssueOrchestrationSummary | null,
+  orchestrationFailed: boolean
+): OrchestrationDerivedFacts {
+  if (orchestrationFailed || !orchestration) {
+    return {
+      availability: "unavailable",
+      approvals: [],
+      invocationBlocks: []
+    };
+  }
+  return {
+    availability: "available",
+    approvals: orchestration.approvals.map(toApprovalFact),
+    invocationBlocks: (orchestration.invocationBlocks ?? []).map(toInvocationBlockFact)
   };
 }
 

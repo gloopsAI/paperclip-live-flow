@@ -28,7 +28,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ["src/**/*.ts", "tests/**/*.ts"],
+    files: ["src/**/*.ts", "tests/**/*.ts", "tests/**/*.tsx"],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "module",
@@ -45,6 +45,26 @@ export default tseslint.config(
       globals: {
         ...globals.node
       }
+    }
+  },
+  {
+    files: ["tests/ui/**/*.{ts,tsx}"],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: "module",
+      parserOptions: {
+        ecmaFeatures: { jsx: true }
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node
+      }
+    },
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }
+      ]
     }
   },
   {

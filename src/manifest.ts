@@ -1,4 +1,9 @@
 import type { PaperclipPluginManifestV1 } from "@paperclipai/plugin-sdk";
+import {
+  DASHBOARD_WIDGET_SLOT_ID,
+  ISSUE_DETAIL_TAB_SLOT_ID,
+  TASK_DETAIL_VIEW_SLOT_ID
+} from "./ui/constants.js";
 
 /** Exact read-only capabilities used by the worker and current UI slots. */
 export const MANIFEST_CAPABILITIES = [
@@ -9,7 +14,8 @@ export const MANIFEST_CAPABILITIES = [
   "issue.documents.read",
   "agents.read",
   "projects.read",
-  "ui.dashboardWidget.register"
+  "ui.dashboardWidget.register",
+  "ui.detailTab.register"
 ] as const;
 
 const manifest: PaperclipPluginManifestV1 = {
@@ -29,9 +35,23 @@ const manifest: PaperclipPluginManifestV1 = {
     slots: [
       {
         type: "dashboardWidget",
-        id: "live-flow-summary",
+        id: DASHBOARD_WIDGET_SLOT_ID,
         displayName: "Live Flow",
         exportName: "DashboardWidget"
+      },
+      {
+        type: "detailTab",
+        id: ISSUE_DETAIL_TAB_SLOT_ID,
+        displayName: "Live Flow",
+        exportName: "IssueDetailTab",
+        entityTypes: ["issue"]
+      },
+      {
+        type: "taskDetailView",
+        id: TASK_DETAIL_VIEW_SLOT_ID,
+        displayName: "Live Flow",
+        exportName: "TaskDetailView",
+        entityTypes: ["issue"]
       }
     ]
   }
