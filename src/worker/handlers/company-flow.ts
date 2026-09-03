@@ -206,7 +206,8 @@ async function loadCompanyFlow(
         canonicalStatus: null,
         currentStageType: null,
         currentParticipantId: null,
-        blockerCount: 0,
+        orchestrationAvailability: "unavailable",
+        blockerCount: null,
         latestRun: null,
         elapsedMs: null,
         phases: unavailablePhaseFacts(phaseProfile, rowError?.message ?? "Root issue unavailable"),
@@ -245,9 +246,12 @@ async function loadCompanyFlow(
         issue.executionState?.currentParticipant?.agentId ??
         issue.executionState?.currentParticipant?.userId ??
         null,
-      blockerCount: collectBlockers(issue.id, summary?.relations ?? {}).length,
-      latestRun: latestRun ? toRunFact(latestRun) : null,
-      elapsedMs: elapsedForRun(latestRun, nowMs),
+      orchestrationAvailability: orchestrationFailed ? "unavailable" : "available",
+      blockerCount: orchestrationFailed
+        ? null
+        : collectBlockers(issue.id, summary?.relations ?? {}).length,
+      latestRun: orchestrationFailed ? null : latestRun ? toRunFact(latestRun) : null,
+      elapsedMs: orchestrationFailed ? null : elapsedForRun(latestRun, nowMs),
       phases,
       phaseProfile,
       tokenCost: orchestrationFailed
@@ -260,7 +264,7 @@ async function loadCompanyFlow(
 
   const failedRuns = roots.filter((row) => row.latestRun?.status === "failed").length;
   const counts = {
-    active: roots.filter((row) => row.canonicalStatus !== null).length,
+    active: roots.length,
     blocked: roots.filter((row) => row.canonicalStatus === "blocked").length,
     inReview: roots.filter((row) => row.canonicalStatus === "in_review").length,
     failedRuns

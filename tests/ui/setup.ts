@@ -22,6 +22,14 @@ export const mockUseHostNavigation = vi.fn(() => ({
   linkProps: mockLinkProps
 }));
 
+export const mockUseHostLocation = vi.fn(() => ({
+  pathname: "/live-flow",
+  search: "",
+  hash: ""
+}));
+
+export const mockRefresh = vi.fn();
+
 export type PluginDataMockState = {
   data: unknown;
   loading: boolean;
@@ -36,7 +44,7 @@ export let pluginDataState: PluginDataMockState = {
 
 export const mockUsePluginData = vi.fn((_key?: string, _params?: Record<string, unknown>) => ({
   ...pluginDataState,
-  refresh: vi.fn()
+  refresh: mockRefresh
 }));
 
 export function setPluginDataState(state: Partial<PluginDataMockState>) {
@@ -47,6 +55,8 @@ export function resetPluginMocks() {
   pluginDataState = { data: null, loading: false, error: null };
   mockUsePluginData.mockClear();
   mockUseHostNavigation.mockClear();
+  mockUseHostLocation.mockClear();
+  mockRefresh.mockClear();
   mockLinkProps.mockClear();
 }
 
@@ -87,6 +97,7 @@ vi.mock("@paperclipai/plugin-sdk/ui", async (importOriginal) => {
     ...actual,
     usePluginData: (key: string, params?: Record<string, unknown>) =>
       mockUsePluginData(key, params),
-    useHostNavigation: () => mockUseHostNavigation()
+    useHostNavigation: () => mockUseHostNavigation(),
+    useHostLocation: () => mockUseHostLocation()
   };
 });

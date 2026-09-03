@@ -1,7 +1,11 @@
 import type { PaperclipPluginManifestV1 } from "@paperclipai/plugin-sdk";
 import {
+  COMPANY_PAGE_ROUTE,
+  COMPANY_PAGE_SLOT_ID,
+  COMPANY_SIDEBAR_SLOT_ID,
   DASHBOARD_WIDGET_SLOT_ID,
   ISSUE_DETAIL_TAB_SLOT_ID,
+  PROJECT_SIDEBAR_ITEM_SLOT_ID,
   TASK_DETAIL_VIEW_SLOT_ID
 } from "./ui/constants.js";
 
@@ -14,6 +18,8 @@ export const MANIFEST_CAPABILITIES = [
   "issue.documents.read",
   "agents.read",
   "projects.read",
+  "ui.page.register",
+  "ui.sidebar.register",
   "ui.dashboardWidget.register",
   "ui.detailTab.register"
 ] as const;
@@ -33,6 +39,26 @@ const manifest: PaperclipPluginManifestV1 = {
   },
   ui: {
     slots: [
+      {
+        type: "page",
+        id: COMPANY_PAGE_SLOT_ID,
+        displayName: "Live Flow",
+        exportName: "CompanyPage",
+        routePath: COMPANY_PAGE_ROUTE
+      },
+      {
+        type: "sidebar",
+        id: COMPANY_SIDEBAR_SLOT_ID,
+        displayName: "Live Flow",
+        exportName: "SidebarLink"
+      },
+      {
+        type: "projectSidebarItem",
+        id: PROJECT_SIDEBAR_ITEM_SLOT_ID,
+        displayName: "Live Flow",
+        exportName: "ProjectSidebarItem",
+        entityTypes: ["project"]
+      },
       {
         type: "dashboardWidget",
         id: DASHBOARD_WIDGET_SLOT_ID,

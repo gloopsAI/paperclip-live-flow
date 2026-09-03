@@ -4,8 +4,11 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 const rootDir = join(fileURLToPath(new URL(".", import.meta.url)), "../..");
-const issueUiPaths = [
+const uiPaths = [
   join(rootDir, "src/ui/issue-flow"),
+  join(rootDir, "src/ui/company-flow"),
+  join(rootDir, "src/ui/dashboard"),
+  join(rootDir, "src/ui/hooks"),
   join(rootDir, "src/ui/index.tsx"),
   join(rootDir, "src/ui/constants.ts")
 ];
@@ -28,9 +31,9 @@ function stripComments(source: string): string {
   return source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 }
 
-describe("issue UI companyId boundary", () => {
+describe("plugin UI read boundary", () => {
   it("does not pass companyId to usePluginData or embed direct company-scoped network routes", () => {
-    const files = issueUiPaths.flatMap((entry) => walkFiles(entry));
+    const files = uiPaths.flatMap((entry) => walkFiles(entry));
     expect(files.length).toBeGreaterThan(0);
 
     for (const file of files) {
@@ -43,7 +46,7 @@ describe("issue UI companyId boundary", () => {
       expect(code).not.toMatch(/\/api\/companies\//);
       expect(code).not.toMatch(/\/actions\//);
 
-      if (rel.endsWith("hooks.ts")) {
+      if (rel.endsWith("issue-flow/hooks.ts")) {
         expect(code).toContain("{ issueId }");
         expect(code).not.toContain("companyId");
       }
