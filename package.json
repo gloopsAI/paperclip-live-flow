@@ -1,0 +1,81 @@
+{
+  "name": "@gloops/paperclip-live-flow",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Read-only workflow visibility for Paperclip",
+  "license": "MIT",
+  "author": "GLoops",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gloopsAI/paperclip-live-flow.git"
+  },
+  "homepage": "https://github.com/gloopsAI/paperclip-live-flow#readme",
+  "bugs": {
+    "url": "https://github.com/gloopsAI/paperclip-live-flow/issues"
+  },
+  "files": [
+    "dist/manifest.js",
+    "dist/manifest.js.map",
+    "dist/worker.js",
+    "dist/worker.js.map",
+    "dist/ui",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --config ./vitest.config.ts",
+    "test:coverage": "vitest run --config ./vitest.config.ts --coverage",
+    "build": "node ./esbuild.config.mjs",
+    "build:rollup": "rollup -c",
+    "pack:check": "npm pack --dry-run",
+    "dev": "node ./esbuild.config.mjs --watch",
+    "dev:ui": "paperclip-plugin-dev-server --root . --ui-dir dist/ui --port 4177"
+  },
+  "paperclipPlugin": {
+    "manifest": "./dist/manifest.js",
+    "worker": "./dist/worker.js",
+    "ui": "./dist/ui/"
+  },
+  "keywords": [
+    "paperclip",
+    "plugin",
+    "live-flow",
+    "workflow",
+    "visibility"
+  ],
+  "engines": {
+    "node": ">=24.11.0"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "pnpm": {
+    "overrides": {
+      "@paperclipai/shared": "file:.paperclip-sdk/paperclipai-shared-0.3.1.tgz"
+    }
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@paperclipai/plugin-sdk": "file:.paperclip-sdk/paperclipai-plugin-sdk-1.0.0.tgz",
+    "@paperclipai/shared": "file:.paperclip-sdk/paperclipai-shared-0.3.1.tgz",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.8",
+    "@vitest/coverage-v8": "^3.0.5",
+    "esbuild": "^0.27.3",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
+    "rollup": "^4.38.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.26.0",
+    "vitest": "^3.0.5"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  }
+}

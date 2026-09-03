@@ -1,0 +1,34 @@
+---
+description: Apply when planning, building, reviewing, or releasing the Paperclip Live Flow plugin in this repository.
+globs:
+  - "src/**"
+  - "tests/**"
+  - "docs/delivery-contract.md"
+  - "package.json"
+  - "pnpm-lock.yaml"
+  - "esbuild.config.mjs"
+  - "rollup.config.mjs"
+  - "tsconfig.json"
+  - "vitest.config.ts"
+  - "eslint.config.js"
+  - ".prettierrc.json"
+alwaysApply: false
+---
+
+The canonical contract is [`docs/delivery-contract.md`](../../docs/delivery-contract.md).
+ADR 0040 is Zach's narrow, expiring authorization to bootstrap this plugin with Cursor outside
+Paperclip. It is not permission to touch an existing Paperclip-owned issue, run, workspace,
+branch, PR, company configuration, or production install.
+
+The parent must run `gpt-5.6-sol-high`. It delegates code writing to the project-scoped
+Composer/Grok agents by task class, keeps a single writer in a shared checkout, and retains
+architecture, integration, git publication, exact-head acceptance, merge, and release
+ownership. Do not use `auto`, Fast variants, API keys, `--force`, or `--yolo`.
+
+The product is an additive read-only plugin. Never patch/fork Paperclip core or request a
+lifecycle-write capability. Missing authoritative facts remain visibly unavailable.
+
+Manifest capabilities do not sandbox same-origin plugin UI. UI data access is only through
+`usePluginData`; navigation uses only `useHostNavigation`. Forbid direct browser
+HTTP/action paths and prove that boundary with static, built-bundle, and browser-network
+checks.
