@@ -1,0 +1,2 @@
+const ISSUES_PATH = "/api/issues/list";
+const ACTION = "/action/agents/invoke";
