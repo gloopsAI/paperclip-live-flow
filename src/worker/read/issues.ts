@@ -1,8 +1,11 @@
 import type { PluginContext } from "@paperclipai/plugin-sdk";
+import type { SourceError } from "../../contracts/common.js";
 import { dedupeById } from "../../domain/roots.js";
 import type { IssueRef } from "../../domain/types.js";
 import { ACTIVE_ISSUE_STATUSES, DEFAULT_PAGE_SIZE } from "../constants.js";
 import { assertEntityCompanyId } from "../company-scope.js";
+import { mapWithBoundedConcurrency } from "../concurrency.js";
+import { buildSourceError } from "../normalize.js";
 import { paginateToExhaustion } from "../pagination.js";
 
 type LoadedIssue = NonNullable<Awaited<ReturnType<PluginContext["issues"]["get"]>>>;
@@ -38,6 +41,44 @@ export async function loadActiveIssues(
   }
 
   return [...byId.values()];
+}
+
+/** Upstream list records omit native execution fields; detail reads restore them. */
+export function listIssueNeedsExecutionHydration(issue: LoadedIssue): boolean {
+  return issue.executionState == null || issue.executionPolicy == null;
+}
+
+export type HydrateExecutionStateResult = {
+  hydrated: Map<string, NonNullable<LoadedIssue>>;
+  sourceErrors: SourceError[];
+};
+
+/** Hydrate list-loaded issues through public issues.get with bounded concurrency. */
+export async function hydrateListedIssuesExecutionState(
+  issues: LoadedIssue[],
+  getIssue: (issueId: string) => Promise<NonNullable<LoadedIssue> | null>,
+  concurrency: number
+): Promise<HydrateExecutionStateResult> {
+  const hydrated = new Map<string, NonNullable<LoadedIssue>>();
+  const sourceErrors: SourceError[] = [];
+  const candidates = issues.filter(listIssueNeedsExecutionHydration);
+
+  await mapWithBoundedConcurrency(candidates, concurrency, async (issue) => {
+    try {
+      const detailed = await getIssue(issue.id);
+      if (detailed) {
+        hydrated.set(issue.id, detailed);
+        return;
+      }
+      sourceErrors.push(
+        buildSourceError(`issues.get:${issue.id}`, new Error("Issue detail unavailable"))
+      );
+    } catch (error) {
+      sourceErrors.push(buildSourceError(`issues.get:${issue.id}`, error));
+    }
+  });
+
+  return { hydrated, sourceErrors };
 }
 
 export function createIssueGetMemo(ctx: PluginContext, companyId: string) {

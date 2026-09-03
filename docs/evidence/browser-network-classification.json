@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-09-03T15:30:50.184Z",
+  "stockPaperclipSha": "da0947d3582ac7779d6bf11851c9938eca6c5c8c",
+  "pluginId": "gloops.live-flow",
+  "pages": ["/LIV/live-flow", "/LIV/dashboard", "/LIV/issues/LIV-9"],
+  "methodology": "Chromium CDP Network.requestWillBeSent initiator stacks, a compact Playwright HAR, and the static/source plus built-bundle boundary gates. Plugin data uses the host-managed usePluginData bridge.",
+  "totals": {
+    "requests": 3805,
+    "authorizedBridgeRequests": 8,
+    "directRequestsWithPluginBundleFrame": 0,
+    "forbiddenDirectRequests": 0,
+    "externalNetworkRequests": 0
+  },
+  "authorizedBridgePaths": [
+    "/api/plugins/{installedPluginId}/data/company-flow",
+    "/api/plugins/{installedPluginId}/data/dashboard-summary",
+    "/api/plugins/{installedPluginId}/data/issue-flow"
+  ],
+  "harNonSuccessResponses": [
+    {
+      "status": 404,
+      "path": "/api/heartbeat-runs/{hostRunId}/log",
+      "classification": "stock host run-log request; no plugin bundle initiator frame"
+    },
+    {
+      "status": 404,
+      "path": "/api/heartbeat-runs/{activeFixtureRunId}/log",
+      "classification": "stock host run-log request; no plugin bundle initiator frame"
+    }
+  ],
+  "consoleClassification": {
+    "pluginExceptions": 0,
+    "pluginConsoleErrors": 0,
+    "stockHostWarnings": [
+      "Nested-route relative InterVariable.woff2 failed to decode",
+      "OpenType Sanitizer reported invalid sfntVersion for that host font response"
+    ],
+    "stockHostErrors": ["A host heartbeat run-log request returned 404"]
+  },
+  "verdict": "pass"
+}

@@ -30,6 +30,7 @@ import {
   createIssueGetMemo,
   dedupeIncidents,
   enrichIssueRefsWithRoots,
+  hydrateListedIssuesExecutionState,
   toIssueRef
 } from "../read/issues.js";
 import {
@@ -67,12 +68,24 @@ async function loadCompanyFlow(
   const loadedAgentIds = new Set(agents.map((agent) => agent.id));
 
   const getIssue = createIssueGetMemo(ctx, companyId);
+  const { hydrated, sourceErrors: hydrationErrors } = await hydrateListedIssuesExecutionState(
+    issues,
+    getIssue,
+    ORCHESTRATION_CONCURRENCY
+  );
+  sourceErrors.push(...hydrationErrors);
+
+  const issueById = new Map(issues.map((issue) => [issue.id, issue]));
+  for (const [issueId, hydratedIssue] of hydrated) {
+    assertEntityCompanyId(hydratedIssue.companyId, companyId);
+    issueById.set(issueId, hydratedIssue);
+  }
+
   const { refs: issueRefs, fetchedIssues } = await enrichIssueRefsWithRoots(
-    issues.map((issue) => toIssueRef(issue)),
+    [...issueById.values()].map((issue) => toIssueRef(issue)),
     getIssue
   );
 
-  const issueById = new Map(issues.map((issue) => [issue.id, issue]));
   for (const [issueId, fetchedIssue] of fetchedIssues) {
     assertEntityCompanyId(fetchedIssue.companyId, companyId);
     issueById.set(issueId, fetchedIssue);

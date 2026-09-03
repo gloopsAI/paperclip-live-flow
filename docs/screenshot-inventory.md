@@ -1,11 +1,11 @@
-# Screenshot inventory (planned W6)
+# Screenshot inventory (W6 complete)
 
-**Status: all entries pending W6.** No files in `docs/evidence/screenshots/` exist yet. W6
-must capture, commit (or attach to release), and replace `pending W6` with path + SHA256
-digest.
+**Status: 12/12 screenshots captured and tracked in git** with SHA256 digests in
+[`MANIFEST.json`](./screenshots/MANIFEST.json). Master receipt:
+[`../evidence/MANIFEST.json`](../evidence/MANIFEST.json).
 
-Storage plan (W6): `docs/evidence/screenshots/` (gitignored until capture — or release-attached
-only per operator policy).
+Large browser canary artifacts (HAR, Playwright trace, video) are **release-attachment-only**
+and gitignored — digests recorded in the master manifest, not committed.
 
 ## Viewports
 
@@ -21,51 +21,62 @@ only per operator policy).
 | `light` | Paperclip light mode |
 | `dark`  | Paperclip dark mode  |
 
-## Planned filenames
+## Captured filenames
 
 Pattern: `{surface}-{viewport}-{theme}-{state}.png`
 
-| Filename                                           | Surface                        | Viewport | Theme | State                                | Status         |
-| -------------------------------------------------- | ------------------------------ | -------- | ----- | ------------------------------------ | -------------- |
-| `company-page-desktop-light-default.png`           | Company Live Flow page         | desktop  | light | Default loaded fixture               | **pending W6** |
-| `company-page-desktop-dark-default.png`            | Company Live Flow page         | desktop  | dark  | Default loaded fixture               | **pending W6** |
-| `company-page-narrow-light-default.png`            | Company Live Flow page         | narrow   | light | Default loaded fixture               | **pending W6** |
-| `company-page-desktop-light-partial-error.png`     | Company Live Flow page         | desktop  | light | Partial orchestration failure banner | **pending W6** |
-| `company-page-desktop-light-empty.png`             | Company Live Flow page         | desktop  | light | No active roots                      | **pending W6** |
-| `company-page-desktop-light-blocked-attention.png` | Company Live Flow page         | desktop  | light | Blocked + attention lane             | **pending W6** |
-| `issue-tab-desktop-light-in-progress.png`          | Issue Delivery Flight Deck tab | desktop  | light | In-progress + active run             | **pending W6** |
-| `issue-tab-desktop-light-review.png`               | Issue Delivery Flight Deck tab | desktop  | light | Pending review stage                 | **pending W6** |
-| `issue-tab-desktop-light-done-not-tracked.png`     | Issue Delivery Flight Deck tab | desktop  | light | Done — merge/deploy not tracked      | **pending W6** |
-| `issue-task-detail-desktop-light-compact.png`      | Issue task detail view         | desktop  | light | Compact flight deck                  | **pending W6** |
-| `dashboard-widget-desktop-light-default.png`       | Dashboard widget               | desktop  | light | Summary counts                       | **pending W6** |
-| `project-sidebar-desktop-light-link.png`           | Project sidebar entry          | desktop  | light | Deep link highlight                  | **pending W6** |
+| Filename                                           | Surface                        | Viewport | Theme | State                                   | Status   | SHA256 (prefix) |
+| -------------------------------------------------- | ------------------------------ | -------- | ----- | --------------------------------------- | -------- | --------------- |
+| `company-page-desktop-light-default.png`           | Company Live Flow page         | desktop  | light | Default loaded fixture                  | **pass** | `d60a0e9b…`     |
+| `company-page-desktop-dark-default.png`            | Company Live Flow page         | desktop  | dark  | Default loaded fixture                  | **pass** | `2ff13d14…`     |
+| `company-page-narrow-light-default.png`            | Company Live Flow page         | narrow   | light | Default loaded fixture                  | **pass** | `ae7d5a02…`     |
+| `company-page-desktop-light-partial-error.png`     | Company Live Flow page         | desktop  | light | Synthetic partial orchestration fail    | **pass** | `18c7c0de…`     |
+| `company-page-desktop-light-empty.png`             | Company Live Flow page         | desktop  | light | Client filter empty / no match          | **pass** | `68350a03…`     |
+| `company-page-desktop-light-blocked-attention.png` | Company Live Flow page         | desktop  | light | Blocked + attention lane                | **pass** | `12cdb882…`     |
+| `issue-tab-desktop-light-in-progress.png`          | Issue Delivery Flight Deck tab | desktop  | light | In-progress + active run (LIV-1)        | **pass** | `3daefbec…`     |
+| `issue-tab-desktop-light-review.png`               | Issue Delivery Flight Deck tab | desktop  | light | Pending review (LIV-9)                  | **pass** | `dead8b99…`     |
+| `issue-tab-desktop-light-done-not-tracked.png`     | Issue Delivery Flight Deck tab | desktop  | light | Done — merge/deploy not tracked (LIV-8) | **pass** | `c4b24758…`     |
+| `issue-task-detail-desktop-light-compact.png`      | Issue task detail view         | desktop  | light | Compact flight deck (LIV-1, default UI) | **pass** | `daac07fa…`     |
+| `dashboard-widget-desktop-light-default.png`       | Dashboard widget               | desktop  | light | Summary counts                          | **pass** | `8812492a…`     |
+| `project-sidebar-desktop-light-link.png`           | Project sidebar entry          | desktop  | light | Deep link highlight (Atlas Delivery)    | **pass** | `52306cb2…`     |
 
-## Capture states (W6 fixture requirements)
+Full digests: [`screenshots/MANIFEST.json`](./screenshots/MANIFEST.json).
 
-Canary data must include at minimum (source plan W4/W6):
+### Capture notes
 
-- ≥2 projects, ≥9 agents
-- Overlapping subtrees
-- One blocked issue
-- One in-review issue
-- One failed latest run
-- Relevant and unrelated budget incidents
+- **`company-page-desktop-light-partial-error.png`:** Synthetic visual fixture — browser
+  intercepted one real `company-flow` response and modified LIV-6 to
+  `orchestrationAvailability: unavailable` with `freshness.partial: true`.
+- **`company-page-desktop-light-empty.png`:** Filter-empty / no-match state; the company still
+  has active roots — not an empty company.
+- **Issue `detailTab` screenshots:** Stock default `enableClassicTaskInterface=false` hides the
+  tab; captures used `enableClassicTaskInterface=true`.
+- **`project-sidebar-desktop-light-link.png`:** Stock default `enableStreamlinedUi=true` hides
+  classic `SidebarProjects`; capture used `enableStreamlinedUi=false`.
 
-## Non-screenshot evidence (same W6 pass)
+## Canary fixture (W6)
 
-| Artifact                                             | Status         |
-| ---------------------------------------------------- | -------------- |
-| Playwright trace / video                             | **pending W6** |
-| Browser console log (clean)                          | **pending W6** |
-| Classified network HAR (plugin-initiated only)       | **pending W6** |
-| Lifecycle before/after JSON snapshot (no writes)     | **pending W6** |
-| `paperclipai plugin inspect gloops.live-flow` output | **pending W6** |
+Isolated stock Paperclip at pin `da0947d`, local_trusted canary `http://127.0.0.1:3120`, company
+slug **LIV**:
+
+- 2 projects, 10 agents, 10 issues
+- Overlapping subtrees, blocked issue, in-review issue (LIV-9), failed latest run, budget incidents
+
+## Non-screenshot evidence (W6 pass)
+
+| Artifact                                              | Status | Receipt                                                                                  |
+| ----------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------- |
+| Playwright trace / video                              | pass   | Release-attachment-only; digests in [`MANIFEST.json`](../evidence/MANIFEST.json)         |
+| Browser console (no plugin errors)                    | pass   | [`browser-network-classification.json`](../evidence/browser-network-classification.json) |
+| Browser accessibility (keyboard, status text, motion) | pass   | [`browser-accessibility-check.json`](../evidence/browser-accessibility-check.json)       |
+| Classified network HAR                                | pass   | Same + gitignored HAR at `docs/evidence/live-flow-w6-browser-canary.har`                 |
+| Lifecycle before/after JSON snapshot (no writes)      | pass   | [`lifecycle-before-after.json`](../evidence/lifecycle-before-after.json)                 |
+| `paperclipai plugin inspect gloops.live-flow` output  | pass   | [`plugin-inspect.json`](../evidence/plugin-inspect.json) — status `ready`                |
 
 ## W6 completion checklist
 
-- [ ] All filenames above captured at listed viewport/theme
-- [ ] SHA256 digest recorded per file in release receipt or `docs/evidence/screenshots/MANIFEST.json`
-- [ ] [`verification-runbook.md`](./verification-runbook.md) updated from pending to pass + links
-- [ ] README screenshots section updated with real paths (not “pending W6”)
-
-Until then, README and release materials must **not** imply screenshots exist.
+- [x] All 12 filenames captured at listed viewport/theme
+- [x] SHA256 digest recorded per screenshot in `docs/evidence/screenshots/MANIFEST.json`
+- [x] [`verification-runbook.md`](./verification-runbook.md) updated from pending to pass + links
+- [x] README screenshots section updated with real paths
+- [x] Large HAR/trace/video digests recorded; artifacts gitignored (release-attachment-only)

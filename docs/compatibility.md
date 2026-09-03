@@ -34,20 +34,34 @@ Scaffold preflight recorded Node **24.18.0** for `paperclipai plugin init` (see
 
 ## Tested versus merely targeted
 
-| Layer                                   | Status                    | Evidence                                        |
-| --------------------------------------- | ------------------------- | ----------------------------------------------- |
-| Unit/domain normalization               | **Tested locally**        | `pnpm test`, table-driven phase/attention tests |
-| Worker RPC + company scope              | **Tested locally**        | Worker handler tests via SDK RPC path           |
-| UI components + a11y patterns           | **Tested locally**        | Vitest + Testing Library                        |
-| UI boundary (no direct HTTP)            | **Tested locally**        | `pnpm check:ui-boundary`                        |
-| Coverage gate                           | **Tested locally**        | `pnpm test:coverage` (~92% at W4 completion)    |
-| Build + pack contents                   | **Tested locally**        | `pnpm build`, `pnpm pack:check`                 |
-| Isolated stock Paperclip browser canary | **Targeted — pending W6** | No receipt yet                                  |
-| npm registry install smoke              | **Targeted — pending W7** | Package unpublished                             |
-| Production Paperclip host               | **Out of scope**          | ADR 0040 bootstrap boundary                     |
+| Layer                                            | Status                    | Evidence                                                                                                     |
+| ------------------------------------------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Unit/domain normalization                        | **Tested locally**        | `pnpm test`, table-driven phase/attention tests                                                              |
+| Worker RPC + company scope                       | **Tested locally**        | Worker handler tests via SDK RPC path                                                                        |
+| UI components + a11y patterns                    | **Tested locally**        | Vitest + Testing Library                                                                                     |
+| UI boundary (no direct HTTP)                     | **Tested locally**        | `pnpm check:ui-boundary`                                                                                     |
+| Coverage gate                                    | **Tested locally**        | `pnpm test:coverage` (~92% at W4 completion)                                                                 |
+| Build + pack contents                            | **Tested locally**        | `pnpm build`, `pnpm pack:check`                                                                              |
+| Isolated stock Paperclip browser canary          | **Tested at W6**          | [`evidence/MANIFEST.json`](./evidence/MANIFEST.json), [`verification-runbook.md`](./verification-runbook.md) |
+| Browser accessibility (keyboard, labels, motion) | **Tested at W6**          | [`browser-accessibility-check.json`](./evidence/browser-accessibility-check.json)                            |
+| npm registry install smoke                       | **Targeted — pending W7** | Package unpublished                                                                                          |
+| Production Paperclip host                        | **Out of scope**          | ADR 0040 bootstrap boundary                                                                                  |
 
 “Targeted” means designed and documented against upstream behavior; “tested” means executed
 with recorded pass/fail in this repository or W6 canary.
+
+## Stock host UI settings (W6 canary disclosures)
+
+These are **stock Paperclip host** behaviors at pin `da0947d`, not Live Flow defects.
+
+| Setting                                               | Default              | W6 impact                                                                                                                                                                                                                   |
+| ----------------------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enableClassicTaskInterface`                          | `false`              | Hides issue `detailTab`. Full Delivery Flight Deck tab screenshots used `enableClassicTaskInterface=true`. Default streamlined task UI still shows compact `taskDetailView`.                                                |
+| `enableStreamlinedUi`                                 | `true`               | Hides classic `SidebarProjects` and therefore `projectSidebarItem`. Project-sidebar screenshot used `enableStreamlinedUi=false`. Company sidebar page link and dashboard widget remain available in default streamlined UI. |
+| Streamlined “Open full Delivery Flight Deck tab” link | active in default UI | Host-navigation link goes to issue URL; stock `IssueDetail` does **not** activate a plugin detail tab from the query while streamlined mode hides the tab.                                                                  |
+
+Evidence: [`screenshot-inventory.md`](./screenshot-inventory.md),
+[`evidence/screenshots/MANIFEST.json`](./evidence/screenshots/MANIFEST.json).
 
 ## Dynamic install limitations
 

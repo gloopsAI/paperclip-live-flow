@@ -1,0 +1,53 @@
+{
+  "generatedAt": "2026-09-03T15:43:28Z",
+  "stockPaperclipSha": "da0947d3582ac7779d6bf11851c9938eca6c5c8c",
+  "pluginId": "gloops.live-flow",
+  "canary": {
+    "mode": "local_trusted_isolated",
+    "apiBase": "http://127.0.0.1:3120",
+    "companySlug": "LIV"
+  },
+  "companyPage": {
+    "url": "http://127.0.0.1:3120/LIV/live-flow",
+    "focusableCount": 22,
+    "allPluginControlsHaveTabIndexZero": true,
+    "keyboardFirstEight": [
+      "Refresh Live Flow",
+      "Project",
+      "Assignee",
+      "Status",
+      "Attention",
+      "Search",
+      "LIV-9",
+      "LIV-6"
+    ],
+    "semanticStructures": {
+      "tables": 1,
+      "lists": 1,
+      "headings": 5
+    },
+    "visibleStatusLabels": ["Status: In review (◑)", "Status: Blocked (⛔)"],
+    "statusLabelsIncludeNonColorText": true
+  },
+  "reducedMotion": {
+    "emulation": "prefers-reduced-motion: reduce",
+    "mediaMatched": true,
+    "pluginSubtreeAnimations": 0,
+    "elementsWithNonZeroAnimationDuration": 0,
+    "elementsWithNonZeroTransitionDuration": 0,
+    "verdict": "pass",
+    "note": "The plugin has no decorative animation or transition to suppress."
+  },
+  "changesRequested": {
+    "url": "http://127.0.0.1:3120/LIV/issues/LIV-9",
+    "method": "Browser-intercepted issue-flow bridge response over the installed plugin UI; worker/domain behavior is covered separately by automated tests.",
+    "synthetic": true,
+    "changesRequestedOutcomeVisible": true,
+    "changesRequestedCountVisible": true,
+    "phaseCount": 6,
+    "activePhase": "Review",
+    "newPhaseManufactured": false,
+    "verdict": "pass"
+  },
+  "verdict": "pass"
+}

@@ -1,0 +1,171 @@
+{
+  "generatedAt": "2026-09-03T15:43:28Z",
+  "verificationPass": "W6",
+  "stockPaperclipSha": "da0947d3582ac7779d6bf11851c9938eca6c5c8c",
+  "pluginSdkVersion": "1.0.0",
+  "pluginSharedVersion": "0.3.1",
+  "pluginId": "gloops.live-flow",
+  "pluginPackageVersion": "0.1.0",
+  "canary": {
+    "mode": "local_trusted_isolated",
+    "apiBase": "http://127.0.0.1:3120",
+    "pluginInspectStatus": "ready",
+    "pluginInspectReceipt": "docs/evidence/plugin-inspect.json",
+    "teardown": {
+      "command": "paperclipai plugin uninstall gloops.live-flow --force",
+      "status": "passed",
+      "pluginListAfter": []
+    }
+  },
+  "linkedJsonReceiptCount": 4,
+  "linkedJsonReceipts": [
+    {
+      "path": "docs/evidence/browser-network-classification.json",
+      "sha256": "637d50ab029309beaca0c74274af69da4a2f273bac04592720d13f5c0875587c"
+    },
+    {
+      "path": "docs/evidence/lifecycle-before-after.json",
+      "sha256": "814313961cd45db0946350f7c0a100662ccb242f729997e1c4aacf6b8976c230"
+    },
+    {
+      "path": "docs/evidence/plugin-inspect.json",
+      "sha256": "ebc663624d3db9f23f784310b44c79e15a1c6e95e4c7726d49348e348a34d0fa"
+    },
+    {
+      "path": "docs/evidence/browser-accessibility-check.json",
+      "sha256": "1b9efe833f4a73de1d4711d96a6a2a7ecb580138e7d6b8bd61424b3a8d14b981"
+    }
+  ],
+  "deterministicGates": {
+    "formatCheck": { "command": "pnpm format:check", "status": "passed" },
+    "lint": { "command": "pnpm lint", "status": "passed" },
+    "typecheck": { "command": "pnpm typecheck", "status": "passed" },
+    "test": {
+      "command": "pnpm test",
+      "status": "passed",
+      "testFiles": 23,
+      "tests": 155
+    },
+    "coverage": { "command": "pnpm test:coverage", "status": "passed" },
+    "build": { "command": "pnpm build", "status": "passed" },
+    "uiBoundaryGate": {
+      "command": "pnpm check:ui-boundary",
+      "status": "passed",
+      "tests": 2
+    },
+    "packDryRun": {
+      "command": "pnpm pack:check",
+      "status": "passed",
+      "packedFiles": 9,
+      "packedSizeKb": 562.9
+    }
+  },
+  "w6Repair": {
+    "summary": "Stock issues.list returned active issue records with executionPolicy and executionState nulled; bounded public issues.get hydration restores native stage/participant and pending-review attention.",
+    "fixtureIssue": "LIV-9",
+    "regressionCoverage": [
+      "root pending-review row hydration",
+      "active child pending-review attention rooted to parent",
+      "thrown detail read degradation",
+      "null detail read recoverable source error",
+      "foreign-company detail read fail-closed"
+    ]
+  },
+  "acceptanceTestEvidence": {
+    "1": "tests/ui/issue-flight-deck.spec.tsx — loads active build with run, agent context, and semantic landmarks",
+    "4": "tests/ui/issue-flight-deck.spec.tsx — renders blocked relation links through host navigation props",
+    "5": "tests/ui/issue-flight-deck.spec.tsx — distinguishes failed run attention from blocked issue status"
+  },
+  "browserCanary": {
+    "methodology": "Chromium CDP + Playwright navigation on isolated stock Paperclip",
+    "pagesVisited": 3,
+    "networkClassificationReceipt": "docs/evidence/browser-network-classification.json",
+    "lifecycleReceipt": "docs/evidence/lifecycle-before-after.json",
+    "accessibilityReceipt": "docs/evidence/browser-accessibility-check.json",
+    "totals": {
+      "hostRequests": 3805,
+      "authorizedBridgeRequests": 8,
+      "directPluginBundleRequests": 0,
+      "forbiddenDirectRequests": 0,
+      "externalRequests": 0
+    },
+    "harNonSuccessNotes": [
+      "Two stock-host /api/heartbeat-runs/{id}/log 404 responses; no plugin bundle initiator"
+    ],
+    "console": {
+      "pluginExceptions": 0,
+      "pluginConsoleErrors": 0,
+      "stockHostWarnings": [
+        "Nested-route relative InterVariable.woff2 decode warnings",
+        "OpenType Sanitizer invalid sfntVersion for host font response"
+      ],
+      "stockHostErrors": ["Host heartbeat run-log 404"]
+    },
+    "accessibilitySummary": {
+      "companyPageFocusableControls": 22,
+      "allPluginControlsTabIndexZero": true,
+      "statusLabelsIncludeNonColorText": true,
+      "reducedMotionPluginAnimations": 0,
+      "changesRequestedBrowserProofSynthetic": true,
+      "changesRequestedAutomatedTestsSeparate": true,
+      "verdict": "pass"
+    }
+  },
+  "lifecycleNonMutation": {
+    "beforeAfterSha256": "d91d7cd2144b01f3e4058c1af87bc2c5bae50763567da7be28eaeb8c4ffa4c03",
+    "equal": true,
+    "counts": {
+      "issues": 10,
+      "agents": 10,
+      "projects": 2,
+      "approvals": 0,
+      "runs": 27
+    },
+    "bridgeCallsSucceeded": ["company-flow", "dashboard-summary", "issue-flow"]
+  },
+  "screenshots": {
+    "manifest": "docs/evidence/screenshots/MANIFEST.json",
+    "count": 12,
+    "trackedInGit": true
+  },
+  "releaseAttachmentOnlyArtifacts": [
+    {
+      "path": "docs/evidence/live-flow-w6-browser-canary.har",
+      "sha256": "26ca22b19ea32d0e542ebb2153137e92d3b02650e3cbdc3d1648003914345098",
+      "sizeBytes": 11329938,
+      "sizeLabel": "11M",
+      "trackedInGit": false
+    },
+    {
+      "path": "docs/evidence/live-flow-w6-browser-canary-trace.zip",
+      "sha256": "c1de5325d97c88a614825cae1b98fca4756b38e49b5f488f3ac7c487a5acba38",
+      "sizeBytes": 37653800,
+      "sizeLabel": "36M",
+      "trackedInGit": false
+    },
+    {
+      "path": "docs/evidence/live-flow-w6-browser-canary.webm",
+      "sha256": "255c3383e857b4c0ce0248461e137e4185c9e1785bd60fcb6c9475bd40bab7a4",
+      "sizeBytes": 3859567,
+      "sizeLabel": "3.7M",
+      "trackedInGit": false
+    }
+  ],
+  "stockHostCompatibilityLimitations": [
+    {
+      "setting": "enableClassicTaskInterface",
+      "default": false,
+      "impact": "Hides issue detailTab; full Delivery Flight Deck tab screenshots used enableClassicTaskInterface=true."
+    },
+    {
+      "setting": "enableStreamlinedUi",
+      "default": true,
+      "impact": "Hides classic SidebarProjects and projectSidebarItem; project-sidebar screenshot used enableStreamlinedUi=false. Dashboard widget and company sidebar page link remain in default streamlined UI."
+    },
+    {
+      "setting": "streamlined taskDetailView host navigation",
+      "default": true,
+      "impact": "Open full Delivery Flight Deck tab link navigates to issue URL but stock IssueDetail does not activate plugin detailTab from query while streamlined mode hides the tab."
+    }
+  ]
+}
