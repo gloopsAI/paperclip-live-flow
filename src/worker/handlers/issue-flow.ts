@@ -24,6 +24,9 @@ import {
   deriveCurrentPhaseKey,
   derivePhases,
   nowIso,
+  toExecutionPolicyFacts,
+  toExecutionStateFacts,
+  toOrchestrationDerivedFacts,
   toExecutionState,
   toIncidentFact,
   toRunFact,
@@ -206,6 +209,24 @@ async function loadIssueFlow(
     }
   }
 
+  let participantLabel: string | null = null;
+  const participantAgentId = issue.executionState?.currentParticipant?.agentId ?? null;
+  if (participantAgentId) {
+    try {
+      const agent = await ctx.agents.get(participantAgentId, companyId);
+      if (agent) {
+        assertEntityCompanyId(agent.companyId, companyId);
+        participantLabel = agent.name;
+      }
+    } catch (error) {
+      sourceErrors.push(buildSourceError("agents.get.participant", error));
+    }
+  }
+
+  const executionPolicy = toExecutionPolicyFacts(issue);
+  const executionState = toExecutionStateFacts(issue, participantLabel);
+  const orchestrationFacts = toOrchestrationDerivedFacts(orchestration, orchestrationFailed);
+
   return {
     companyId,
     issueId: issue.id,
@@ -220,6 +241,9 @@ async function loadIssueFlow(
     updatedAt: issue.updatedAt ? new Date(issue.updatedAt).toISOString() : null,
     phaseProfile,
     phases,
+    executionPolicy,
+    executionState,
+    orchestration: orchestrationFacts,
     blockers,
     runs,
     incidents,

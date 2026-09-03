@@ -3,8 +3,11 @@ import type {
   CanonicalIssueStatus,
   CompatibilityState,
   DocumentFact,
+  ExecutionPolicyFacts,
+  ExecutionStateFacts,
   FreshnessState,
   IncidentFact,
+  OrchestrationDerivedFacts,
   PhaseFact,
   PhaseProfile,
   RelationFact,
@@ -28,6 +31,9 @@ export type IssueFlowResponse = {
   updatedAt: string | null;
   phaseProfile: PhaseProfile;
   phases: PhaseFact[];
+  executionPolicy: ExecutionPolicyFacts;
+  executionState: ExecutionStateFacts;
+  orchestration: OrchestrationDerivedFacts;
   blockers: RelationFact[];
   runs: RunFact[];
   incidents: IncidentFact[];
