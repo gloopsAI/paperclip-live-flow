@@ -1,6 +1,7 @@
 import type {
   AttentionItem,
   CanonicalIssueStatus,
+  FieldAvailability,
   FreshnessState,
   IncidentFact,
   PhaseFact,
@@ -22,7 +23,10 @@ export type CompanyFlowRootRow = {
   canonicalStatus: CanonicalIssueStatus | null;
   currentStageType: string | null;
   currentParticipantId: string | null;
-  blockerCount: number;
+  /** Unavailable when orchestration summary could not be loaded for this root. */
+  orchestrationAvailability: FieldAvailability;
+  /** Null when orchestration is unavailable — never a synthetic zero. */
+  blockerCount: number | null;
   latestRun: RunFact | null;
   elapsedMs: number | null;
   phases: PhaseFact[];

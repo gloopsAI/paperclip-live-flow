@@ -75,3 +75,30 @@ export const tdStyle: CSSProperties = {
   borderBottom: "1px solid color-mix(in srgb, var(--border) 60%, transparent)",
   verticalAlign: "top"
 };
+
+export const pageShell: CSSProperties = {
+  display: "grid",
+  gap: "var(--lf-gap, 16px)",
+  maxWidth: "1920px",
+  margin: "0 auto",
+  padding: "12px"
+};
+
+export const responsiveGrid: CSSProperties = {
+  display: "grid",
+  gap: "12px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))"
+};
+
+export const filterBar: CSSProperties = {
+  display: "grid",
+  gap: "10px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))"
+};
+
+export const controlStyle: CSSProperties = {
+  ...disclosureButton,
+  width: "100%"
+};
+
+export const focusVisibleClass = "lf-focus-visible";

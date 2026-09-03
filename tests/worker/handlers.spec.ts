@@ -66,4 +66,43 @@ describe("Live Flow worker handlers", () => {
     });
     expect(about.id).toBe("gloops.live-flow");
   });
+
+  it("marks company root orchestration facts unavailable when summary fails", async () => {
+    const harness = seedMinimalHarness();
+    harness.ctx.issues.summaries.getOrchestration = async () => {
+      throw new Error("orchestration down");
+    };
+    await plugin.definition.setup(harness.ctx);
+
+    const flow = await invokeRpcGetData<{
+      roots: Array<{
+        orchestrationAvailability: string;
+        blockerCount: number | null;
+        latestRun: unknown;
+        elapsedMs: number | null;
+      }>;
+    }>(harness, "company-flow", COMPANY_A, {});
+
+    expect(flow.roots[0]?.orchestrationAvailability).toBe("unavailable");
+    expect(flow.roots[0]?.blockerCount).toBeNull();
+    expect(flow.roots[0]?.latestRun).toBeNull();
+    expect(flow.roots[0]?.elapsedMs).toBeNull();
+  });
+
+  it("counts active roots as loaded root rows even when root canonical status is unavailable", async () => {
+    const harness = seedMinimalHarness();
+    harness.ctx.issues.summaries.getOrchestration = async () => {
+      throw new Error("orchestration down");
+    };
+    await plugin.definition.setup(harness.ctx);
+
+    const flow = await invokeRpcGetData<{
+      roots: Array<{ canonicalStatus: string | null; orchestrationAvailability: string }>;
+      counts: { active: number };
+    }>(harness, "company-flow", COMPANY_A, {});
+
+    expect(flow.roots).toHaveLength(1);
+    expect(flow.roots[0]?.orchestrationAvailability).toBe("unavailable");
+    expect(flow.counts.active).toBe(flow.roots.length);
+  });
 });
