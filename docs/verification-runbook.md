@@ -17,11 +17,11 @@ Run from plugin repository root on a clean install:
 | Format                 | `pnpm format:check`              | **passed**                                                                 |
 | Lint                   | `pnpm lint`                      | **passed**                                                                 |
 | Typecheck              | `pnpm typecheck`                 | **passed**                                                                 |
-| Unit/integration tests | `pnpm test`                      | **passed** (155 tests / 23 files; builds `dist/` first for clean checkout) |
+| Unit/integration tests | `pnpm test`                      | **passed** (162 tests / 23 files; builds `dist/` first for clean checkout) |
 | Coverage               | `pnpm test:coverage`             | **passed** (builds `dist/` first for clean checkout)                       |
 | Build                  | `pnpm build`                     | **passed** (also invoked by test scripts and `check:ui-boundary`)          |
 | UI boundary            | `pnpm check:ui-boundary`         | **passed** (2 tests, built bundle; explicit CI/release step)               |
-| Pack dry-run           | `pnpm pack:check`                | **passed** (9 files, 562.8 kB)                                             |
+| Pack dry-run           | `pnpm pack:check`                | **passed** (9 files, 563.9 kB)                                             |
 
 ## W6 repair (list vs detail execution state)
 

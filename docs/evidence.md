@@ -164,5 +164,13 @@ See [`src/contracts/common.ts`](../src/contracts/common.ts).
 
 ## Evidence receipts (W6+)
 
-Browser canary screenshots, network classification, and lifecycle before/after snapshots are
-**pending W6**. This document describes derivation rules only — not release proof.
+Browser canary screenshots, network classification, lifecycle before/after snapshots, and
+browser accessibility checks **passed at W6**. Linked receipts:
+[`evidence/MANIFEST.json`](./evidence/MANIFEST.json). npm registry install replay remains
+**pending W7**.
+
+### Foreground refresh (UI)
+
+Company-flow polling uses `useForegroundRefresh` with host bridge `refresh()`. While
+`usePluginData` reports `loading: true`, timer and visibility refreshes are suppressed to avoid
+overlapping bridge calls; refresh resumes when loading completes.

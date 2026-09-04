@@ -12,7 +12,9 @@ const COMPANY_B = "22222222-2222-2222-2222-222222222222";
 const PROJECT_A = "33333333-3333-3333-3333-333333333333";
 const ISSUE_ROOT = "44444444-4444-4444-4444-444444444444";
 const ISSUE_CHILD = "55555555-5555-5555-5555-555555555555";
+const ISSUE_CHILD_B = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
 const ISSUE_FOREIGN = "66666666-6666-6666-6666-666666666666";
+const ISSUE_STANDALONE = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
 const AGENT_A = "77777777-7777-7777-7777-777777777777";
 const AGENT_PARTICIPANT = "88888888-8888-8888-8888-888888888888";
 const PROJECT_UNKNOWN = "99999999-9999-9999-9999-999999999999";
@@ -215,6 +217,91 @@ describe("W2B correctness repairs", () => {
     expect(root?.title).toBe("");
     expect(root?.title).not.toBe(ISSUE_ROOT);
     expect(root?.rowError).toBeTruthy();
+  });
+
+  it("continues company-flow when inactive parent detail throws and keeps other roots usable", async () => {
+    const harness = seedHarness({
+      issues: [
+        baseIssue({
+          id: ISSUE_STANDALONE,
+          companyId: COMPANY_A,
+          title: "Standalone active",
+          projectId: PROJECT_A,
+          status: "in_progress",
+          identifier: "LF-ACTIVE"
+        }),
+        baseIssue({
+          id: ISSUE_CHILD,
+          companyId: COMPANY_A,
+          parentId: ISSUE_ROOT,
+          title: "Child A",
+          projectId: PROJECT_A,
+          status: "in_progress",
+          identifier: "LF-CHILD-A"
+        }),
+        baseIssue({
+          id: ISSUE_CHILD_B,
+          companyId: COMPANY_A,
+          parentId: ISSUE_ROOT,
+          title: "Child B",
+          projectId: PROJECT_A,
+          status: "in_progress",
+          identifier: "LF-CHILD-B"
+        })
+      ]
+    });
+
+    const originalList = harness.ctx.issues.list;
+    harness.ctx.issues.list = async (input) => {
+      if (input.status === "in_progress") {
+        return originalList({ ...input, status: "in_progress" });
+      }
+      return [];
+    };
+
+    let parentGetCalls = 0;
+    const originalGet = harness.ctx.issues.get;
+    harness.ctx.issues.get = async (issueId, companyId) => {
+      if (issueId === ISSUE_ROOT) {
+        parentGetCalls += 1;
+        throw new Error("parent detail unavailable");
+      }
+      return originalGet(issueId, companyId);
+    };
+
+    await plugin.definition.setup(harness.ctx);
+    const company = await invokeRpcGetData<{
+      roots: Array<{
+        rootIssueId: string;
+        title: string;
+        canonicalStatus: string | null;
+        orchestrationAvailability: string;
+        rowError: { source: string; recoverable: boolean } | null;
+      }>;
+      sourceErrors: Array<{ source: string; recoverable: boolean }>;
+      freshness: { partial: boolean };
+    }>(harness, "company-flow", COMPANY_A, {});
+
+    expect(parentGetCalls).toBe(1);
+    expect(company.roots).toHaveLength(2);
+    expect(company.roots.filter((row) => row.rootIssueId === ISSUE_ROOT)).toHaveLength(1);
+    expect(company.freshness.partial).toBe(true);
+
+    const parentErrors = company.sourceErrors.filter(
+      (entry) => entry.source === `issues.get:${ISSUE_ROOT}`
+    );
+    expect(parentErrors).toHaveLength(1);
+    expect(parentErrors[0]?.recoverable).toBe(true);
+
+    const missingParent = company.roots.find((row) => row.rootIssueId === ISSUE_ROOT);
+    expect(missingParent?.orchestrationAvailability).toBe("unavailable");
+    expect(missingParent?.title).toBe("");
+    expect(missingParent?.canonicalStatus).toBeNull();
+    expect(missingParent?.rowError).toBeTruthy();
+
+    const standalone = company.roots.find((row) => row.rootIssueId === ISSUE_STANDALONE);
+    expect(standalone?.title).toBe("Standalone active");
+    expect(standalone?.orchestrationAvailability).toBe("available");
   });
 
   it("keeps issue rows when projects.list fails independently", async () => {

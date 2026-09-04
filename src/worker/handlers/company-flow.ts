@@ -81,10 +81,15 @@ async function loadCompanyFlow(
     issueById.set(issueId, hydratedIssue);
   }
 
-  const { refs: issueRefs, fetchedIssues } = await enrichIssueRefsWithRoots(
+  const {
+    refs: issueRefs,
+    fetchedIssues,
+    sourceErrors: enrichErrors
+  } = await enrichIssueRefsWithRoots(
     [...issueById.values()].map((issue) => toIssueRef(issue)),
     getIssue
   );
+  sourceErrors.push(...enrichErrors);
 
   for (const [issueId, fetchedIssue] of fetchedIssues) {
     assertEntityCompanyId(fetchedIssue.companyId, companyId);

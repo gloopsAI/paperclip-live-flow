@@ -60,16 +60,45 @@ function notTracked(explanation: string, prov: ProvenanceSource[] = []): Resolve
   };
 }
 
+function compareRunsNewestFirst(a: RunRef, b: RunRef): number {
+  const aTs = runSortTimestamp(a);
+  const bTs = runSortTimestamp(b);
+  if (aTs !== bTs) return bTs - aTs;
+  return b.id.localeCompare(a.id);
+}
+
+function runSortTimestamp(run: RunRef): number {
+  if (run.startedAt) {
+    const started = Date.parse(run.startedAt);
+    if (!Number.isNaN(started)) return started;
+  }
+  if (run.finishedAt) {
+    const finished = Date.parse(run.finishedAt);
+    if (!Number.isNaN(finished)) return finished;
+  }
+  return 0;
+}
+
+function effectiveLatestRun(input: PhaseDerivationInput): RunRef | null {
+  if (input.runs.length === 0) return null;
+  return [...input.runs].sort(compareRunsNewestFirst)[0] ?? null;
+}
+
 function hasActiveRun(input: PhaseDerivationInput): RunRef | null {
-  return (
-    input.runs.find((run: RunRef) => run.status === "running" || run.status === "in_progress") ??
-    input.runs.find((run: RunRef) => !run.finishedAt && run.startedAt) ??
-    null
-  );
+  const latest = effectiveLatestRun(input);
+  if (!latest) return null;
+  if (latest.status === "running" || latest.status === "in_progress") {
+    return latest;
+  }
+  if (!latest.finishedAt && latest.startedAt) {
+    return latest;
+  }
+  return null;
 }
 
 function hasFailedRun(input: PhaseDerivationInput): RunRef | null {
-  return input.runs.find((run: RunRef) => run.status === "failed") ?? null;
+  const latest = effectiveLatestRun(input);
+  return latest?.status === "failed" ? latest : null;
 }
 
 function mergedPullRequest(input: PhaseDerivationInput): WorkProductRef | undefined {

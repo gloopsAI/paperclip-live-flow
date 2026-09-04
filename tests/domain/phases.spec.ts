@@ -130,8 +130,158 @@ describe("derivePhases — software delivery profile", () => {
         ]
       })
     );
-    expect(phases.find((p) => p.key === "build")?.state).toBe("failed");
+    const build = phases.find((p) => p.key === "build");
+    expect(build?.state).toBe("failed");
+    expect(build?.source[0]?.entityId).toBe("run-fail");
   });
+
+  it.each([
+    {
+      label: "older failed + newer succeeded",
+      runs: [
+        {
+          id: "run-old-fail",
+          issueId: "issue-1",
+          agentId: "agent-1",
+          status: "failed",
+          startedAt: "2026-09-03T11:00:00.000Z",
+          finishedAt: "2026-09-03T11:01:00.000Z"
+        },
+        {
+          id: "run-new-ok",
+          issueId: "issue-1",
+          agentId: "agent-1",
+          status: "succeeded",
+          startedAt: "2026-09-03T12:00:00.000Z",
+          finishedAt: "2026-09-03T12:05:00.000Z"
+        }
+      ],
+      reviewStage: false,
+      expectBuildFailed: false,
+      expectReviewFailed: false,
+      expectedLatestRunId: "run-new-ok"
+    },
+    {
+      label: "older failed + newer in-progress",
+      runs: [
+        {
+          id: "run-old-fail",
+          issueId: "issue-1",
+          agentId: "agent-1",
+          status: "failed",
+          startedAt: "2026-09-03T11:00:00.000Z",
+          finishedAt: "2026-09-03T11:01:00.000Z"
+        },
+        {
+          id: "run-new-active",
+          issueId: "issue-1",
+          agentId: "agent-1",
+          status: "running",
+          startedAt: "2026-09-03T12:00:00.000Z",
+          finishedAt: null
+        }
+      ],
+      reviewStage: false,
+      expectBuildFailed: false,
+      expectReviewFailed: false,
+      expectedLatestRunId: "run-new-active"
+    },
+    {
+      label: "newer failed run",
+      runs: [
+        {
+          id: "run-old-ok",
+          issueId: "issue-1",
+          agentId: "agent-1",
+          status: "succeeded",
+          startedAt: "2026-09-03T11:00:00.000Z",
+          finishedAt: "2026-09-03T11:05:00.000Z"
+        },
+        {
+          id: "run-new-fail",
+          issueId: "issue-1",
+          agentId: "agent-1",
+          status: "failed",
+          startedAt: "2026-09-03T12:00:00.000Z",
+          finishedAt: "2026-09-03T12:01:00.000Z"
+        }
+      ],
+      reviewStage: false,
+      expectBuildFailed: true,
+      expectReviewFailed: false,
+      expectedLatestRunId: "run-new-fail"
+    },
+    {
+      label: "review stage ignores older failed when latest succeeded",
+      runs: [
+        {
+          id: "run-old-fail",
+          issueId: "issue-1",
+          agentId: "agent-1",
+          status: "failed",
+          startedAt: "2026-09-03T11:00:00.000Z",
+          finishedAt: "2026-09-03T11:01:00.000Z"
+        },
+        {
+          id: "run-new-ok",
+          issueId: "issue-1",
+          agentId: "agent-1",
+          status: "succeeded",
+          startedAt: "2026-09-03T12:00:00.000Z",
+          finishedAt: "2026-09-03T12:05:00.000Z"
+        }
+      ],
+      reviewStage: true,
+      expectBuildFailed: false,
+      expectReviewFailed: false,
+      expectedLatestRunId: "run-new-ok"
+    }
+  ])(
+    "latest run selection: $label",
+    ({ label, runs, reviewStage, expectBuildFailed, expectReviewFailed, expectedLatestRunId }) => {
+      const phases = derivePhases(
+        "software_delivery",
+        baseInput({
+          canonicalStatus: "in_progress",
+          runs,
+          executionState: reviewStage
+            ? {
+                status: "in_progress",
+                currentStageId: "stage-review",
+                currentStageType: "review",
+                currentParticipantAgentId: "reviewer-1",
+                currentParticipantUserId: null,
+                completedStageIds: [],
+                lastDecisionOutcome: null
+              }
+            : undefined
+        })
+      );
+
+      const build = phases.find((p) => p.key === "build");
+      const review = phases.find((p) => p.key === "review");
+
+      if (expectBuildFailed) {
+        expect(build?.state).toBe("failed");
+        expect(build?.source[0]?.entityId).toBe(expectedLatestRunId);
+        expect(build?.source[0]?.field).toBe("status");
+      } else if (label === "older failed + newer in-progress") {
+        expect(build?.state).toBe("active");
+        expect(build?.source[0]?.entityId).toBe(expectedLatestRunId);
+      } else {
+        expect(build?.state).not.toBe("failed");
+      }
+
+      if (reviewStage) {
+        if (expectReviewFailed) {
+          expect(review?.state).toBe("failed");
+          expect(review?.source[0]?.entityId).toBe(expectedLatestRunId);
+        } else {
+          expect(review?.state).not.toBe("failed");
+        }
+      }
+    }
+  );
 
   it("done without merge/deploy marks merge and deploy not_tracked", () => {
     const phases = derivePhases(

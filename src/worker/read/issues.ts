@@ -100,13 +100,42 @@ export function createIssueGetMemo(ctx: PluginContext, companyId: string) {
 }
 
 /** Resolve missing parent/root through issues.get with request memoization. */
+export type EnrichIssueRefsResult = {
+  refs: IssueRef[];
+  fetchedIssues: Map<string, NonNullable<LoadedIssue>>;
+  sourceErrors: SourceError[];
+};
+
 export async function enrichIssueRefsWithRoots(
   refs: IssueRef[],
   getIssue: (issueId: string) => Promise<NonNullable<LoadedIssue> | null>
-): Promise<{ refs: IssueRef[]; fetchedIssues: Map<string, NonNullable<LoadedIssue>> }> {
+): Promise<EnrichIssueRefsResult> {
   const byId = new Map(refs.map((ref) => [ref.id, { ...ref }]));
   const fetchedIssues = new Map<string, NonNullable<LoadedIssue>>();
+  const sourceErrors: SourceError[] = [];
+  const parentFetchErrors = new Set<string>();
   const rootMemo = new Map<string, string>();
+
+  function recordParentFetchFailure(parentId: string, error: unknown): void {
+    if (parentFetchErrors.has(parentId)) return;
+    parentFetchErrors.add(parentId);
+    sourceErrors.push(buildSourceError(`issues.get:${parentId}`, error));
+  }
+
+  async function fetchMissingParent(parentId: string): Promise<void> {
+    if (byId.has(parentId) || parentFetchErrors.has(parentId)) return;
+    try {
+      const parent = await getIssue(parentId);
+      if (parent) {
+        byId.set(parent.id, toIssueRef(parent));
+        fetchedIssues.set(parent.id, parent);
+        return;
+      }
+      recordParentFetchFailure(parentId, new Error("Issue detail unavailable"));
+    } catch (error) {
+      recordParentFetchFailure(parentId, error);
+    }
+  }
 
   async function rootOf(issueId: string, visiting = new Set<string>()): Promise<string> {
     const cached = rootMemo.get(issueId);
@@ -126,11 +155,7 @@ export async function enrichIssueRefsWithRoots(
     }
 
     if (!byId.has(ref.parentId)) {
-      const parent = await getIssue(ref.parentId);
-      if (parent) {
-        byId.set(parent.id, toIssueRef(parent));
-        fetchedIssues.set(parent.id, parent);
-      }
+      await fetchMissingParent(ref.parentId);
     }
 
     const parentRef = byId.get(ref.parentId);
@@ -156,7 +181,7 @@ export async function enrichIssueRefsWithRoots(
     }
   }
 
-  return { refs: [...byId.values()], fetchedIssues };
+  return { refs: [...byId.values()], fetchedIssues, sourceErrors };
 }
 
 export async function loadProjects(ctx: PluginContext, companyId: string) {

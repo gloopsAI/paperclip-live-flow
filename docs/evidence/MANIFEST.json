@@ -44,7 +44,7 @@
       "command": "pnpm test",
       "status": "passed",
       "testFiles": 23,
-      "tests": 155
+      "tests": 162
     },
     "coverage": { "command": "pnpm test:coverage", "status": "passed" },
     "build": { "command": "pnpm build", "status": "passed" },
@@ -57,10 +57,10 @@
       "command": "pnpm pack:check",
       "status": "passed",
       "packedFiles": 9,
-      "packedSizeBytes": 562848,
-      "packedSizeKb": 562.8,
-      "packedShasum": "85ccffb99ef1e62841033fd32a15517de5a21b8c",
-      "packedSha256": "1bbc74e48328770e8e684c0d2a94465f7767f5d9b0df4edff8175bb5bb235802"
+      "packedSizeBytes": 563949,
+      "packedSizeKb": 563.9,
+      "packedShasum": "9dc450c1f4b47cebcabc42dca60c0d92edad507b",
+      "packedSha256": "647acb87ffb238138f0201fa571eb160823c47d051768d61c68fd47fca8e5328"
     }
   },
   "w6Repair": {
@@ -78,6 +78,18 @@
     "1": "tests/ui/issue-flight-deck.spec.tsx — loads active build with run, agent context, and semantic landmarks",
     "4": "tests/ui/issue-flight-deck.spec.tsx — renders blocked relation links through host navigation props",
     "5": "tests/ui/issue-flight-deck.spec.tsx — distinguishes failed run attention from blocked issue status"
+  },
+  "acceptanceRepairs": {
+    "parentDetailFetchFailure": "enrichIssueRefsWithRoots records recoverable issues.get:<parentId> and continues with unavailable root row",
+    "latestRunPhaseFailure": "derivePhases uses effective latest run; historical failures do not override newer evidence",
+    "foregroundRefreshOverlap": "useForegroundRefresh suppresses refresh while usePluginData loading is true",
+    "repairCanaryReplay": {
+      "capturedAt": "2026-09-04T21:28:00Z",
+      "pluginInspectStatus": "ready",
+      "companyPageRoots": 7,
+      "liv9CompactView": "in_review with native review participant",
+      "companyFlowOverlap": { "durationMs": 20000, "maxConcurrent": 1, "verdict": "pass" }
+    }
   },
   "browserCanary": {
     "methodology": "Chromium CDP + Playwright navigation on isolated stock Paperclip",

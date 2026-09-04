@@ -11,11 +11,12 @@ export function delayForStreak(baseIntervalMs: number, streak: number): number {
 /** Foreground polling via usePluginData.refresh — timers stop while document is hidden. */
 export function useForegroundRefresh(
   refresh: () => void,
-  options?: { intervalMs?: number; hasError?: boolean }
+  options?: { intervalMs?: number; hasError?: boolean; isLoading?: boolean }
 ) {
   const baseIntervalMs = options?.intervalMs ?? DEFAULT_INTERVAL_MS;
   const errorStreakRef = useRef(0);
   const hasErrorRef = useRef(Boolean(options?.hasError));
+  const isLoadingRef = useRef(Boolean(options?.isLoading));
 
   useEffect(() => {
     hasErrorRef.current = Boolean(options?.hasError);
@@ -23,6 +24,10 @@ export function useForegroundRefresh(
       errorStreakRef.current = 0;
     }
   }, [options?.hasError]);
+
+  useEffect(() => {
+    isLoadingRef.current = Boolean(options?.isLoading);
+  }, [options?.isLoading]);
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | null = null;
@@ -34,6 +39,16 @@ export function useForegroundRefresh(
       }
     };
 
+    const maybeRefresh = () => {
+      if (isLoadingRef.current) return;
+      refresh();
+      if (hasErrorRef.current) {
+        errorStreakRef.current += 1;
+      } else {
+        errorStreakRef.current = 0;
+      }
+    };
+
     const schedule = () => {
       clearTimer();
       if (typeof document === "undefined" || document.visibilityState !== "visible") {
@@ -42,12 +57,7 @@ export function useForegroundRefresh(
       const delay = delayForStreak(baseIntervalMs, errorStreakRef.current);
       timer = setTimeout(() => {
         if (typeof document !== "undefined" && document.visibilityState === "visible") {
-          refresh();
-          if (hasErrorRef.current) {
-            errorStreakRef.current += 1;
-          } else {
-            errorStreakRef.current = 0;
-          }
+          maybeRefresh();
         }
         schedule();
       }, delay);
@@ -56,7 +66,7 @@ export function useForegroundRefresh(
     const onVisibility = () => {
       if (typeof document === "undefined") return;
       if (document.visibilityState === "visible") {
-        refresh();
+        maybeRefresh();
         schedule();
       } else {
         clearTimer();
