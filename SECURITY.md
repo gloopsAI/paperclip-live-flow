@@ -64,8 +64,8 @@ Flow code specifically.
 
 ## Security-related verification
 
-| Check                          | Command / doc                                                                     |
-| ------------------------------ | --------------------------------------------------------------------------------- |
-| UI boundary gate               | `pnpm check:ui-boundary`                                                          |
-| Browser network classification | [`docs/verification-runbook.md`](./docs/verification-runbook.md) — **pending W6** |
-| Lifecycle non-mutation canary  | **pending W6**                                                                    |
+| Check                          | Command / doc                                                                                                                                                                   |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UI boundary gate               | `pnpm check:ui-boundary`                                                                                                                                                        |
+| Browser network classification | [`docs/verification-runbook.md`](./docs/verification-runbook.md) — **passed W6** ([`browser-network-classification.json`](./docs/evidence/browser-network-classification.json)) |
+| Lifecycle non-mutation canary  | **passed W6** ([`lifecycle-before-after.json`](./docs/evidence/lifecycle-before-after.json))                                                                                    |

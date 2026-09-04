@@ -86,9 +86,19 @@ this bootstrap's authority.
 | [`issue-2741.md`](./issue-2741.md)                     | Upstream issue mapping             |
 | [`operator-commands.md`](./operator-commands.md)       | Pinned upstream CLI reference      |
 | [`verification-runbook.md`](./verification-runbook.md) | Gates and canary procedure         |
-| [`screenshot-inventory.md`](./screenshot-inventory.md) | Planned W6 captures                |
+| [`screenshot-inventory.md`](./screenshot-inventory.md) | W6 screenshot captures (12/12)     |
 
-Browser/canary and screenshot evidence remain **pending W6** — see verification runbook.
+Browser/canary and screenshot evidence **passed at W6** — see
+[`verification-runbook.md`](./verification-runbook.md) and [`evidence/MANIFEST.json`](./evidence/MANIFEST.json).
+Registry install and npm publish remain **pending W7**.
+
+## Acceptance repairs (exact-head review)
+
+| Finding                                               | Repair                                                                                                                                                            |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parent `issues.get` throw/null collapsed company-flow | `enrichIssueRefsWithRoots` records recoverable `issues.get:<parentId>` once, keeps unresolved parent as root, emits unavailable row with `freshness.partial=true` |
+| Historical failed run marked build/review failed      | Phase derivation uses effective latest run by newest `startedAt` (fallback `finishedAt`); only latest `failed` fails build/review                                 |
+| Foreground refresh overlap                            | `useForegroundRefresh` skips timer/visibility refresh while `usePluginData` loading is true                                                                       |
 
 ## Model use (bootstrap W5 disclosure)
 

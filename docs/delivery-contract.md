@@ -129,7 +129,7 @@ See `docs/architecture.md` for preflight evidence and scaffold lineage.
 
 ## Documentation (W5)
 
-Operator and evidence docs (browser canary **pending W6**):
+Operator and evidence docs (W6 browser canary **passed**; registry publish **pending W7**):
 
 - [`compatibility.md`](./compatibility.md)
 - [`evidence.md`](./evidence.md)
